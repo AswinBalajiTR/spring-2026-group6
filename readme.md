@@ -1,6 +1,6 @@
-# WTI Crude Oil Price Forecasting
+# Energy Price Forecasting using Macro Indicators and News Data
 
-Time series analysis and forecasting of WTI Crude Oil prices using ARIMA models with an ensemble approach.
+Time series analysis and forecasting of Energy prices (CNG & Crude Oil) with help of macro economic variables and global News data.
 
 ---
 
