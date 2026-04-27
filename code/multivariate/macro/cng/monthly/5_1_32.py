@@ -29,14 +29,14 @@ from models     import Models
 from eda        import EDA
 
 # ── Config ──────────────────────────────────────────────────────
-TARGET        = "natural_gas"
-INPUT_WINDOW  = 24
+TARGET        = "wti_crude_oil"
+INPUT_WINDOW  = 1
 OUTPUT_WINDOW = 1
 BATCH_SIZE    = 32
 EPOCHS        = 250
 OPTUNA_EPOCHS = 100
-N_TRIALS      = 35
-VAL_SPLIT     = 0.1
+N_TRIALS      = 30
+VAL_SPLIT     = 0.10
 PATIENCE      = 25
 SEED          = 42
 
@@ -58,8 +58,8 @@ def main():
     # ── Load ─────────────────────────────────────────────────────
     dl = DataLoader()
     df = dl.combine_all_as_monthly(exclude=['news_data.csv'])
-    df.drop(columns=['pce','usd_index','ppi','natgas_electric','vehicle_sales',
-                     'ind_production_overall','usd_eur','cap_util_oil_gas','gasoline_price','ppidp','cpi'], inplace=True, axis=1, errors='ignore')
+    df.drop(columns=['pce','brent_crude_oil','ppi','natgas_electric', 'usd_index','usd_eur','cpi',
+                     'cap_util_oil_gas','ind_production_overall','gasoline_price','ppidp'], inplace=True, axis=1, errors='ignore')
 
     eda = EDA(results_dir, TARGET, INPUT_WINDOW)
 
@@ -71,8 +71,8 @@ def main():
 
     backtest_data, train_data, test_data = dl.split_time_series(df, INPUT_WINDOW, OUTPUT_WINDOW)
 
-
-    train_data_scaled, test_data_scaled, backtest_data_scaled = eda.normalize(train_data, test_data, backtest_data)
+    train_data_scaled, test_data_scaled, backtest_data_scaled = eda.normalize(
+        train_data, test_data, backtest_data, scaler_type="robust")
 
     train_X, train_Y, test_X, test_Y, btest_X, btest_Y = dl.build_sequences(
         backtest_data_scaled, train_data_scaled, test_data_scaled,

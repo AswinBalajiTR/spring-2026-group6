@@ -30,7 +30,7 @@ from eda        import EDA
 
 # ── Config ──────────────────────────────────────────────────────
 TARGET        = "natural_gas"
-INPUT_WINDOW  = 5
+INPUT_WINDOW  = 24
 OUTPUT_WINDOW = 1
 BATCH_SIZE    = 32
 EPOCHS        = 250
@@ -72,7 +72,7 @@ def main():
     backtest_data, train_data, test_data = dl.split_time_series(df, INPUT_WINDOW, OUTPUT_WINDOW)
 
     train_data_scaled, test_data_scaled, backtest_data_scaled = eda.normalize(
-        train_data, test_data, backtest_data, scaler_type="robust")
+        train_data, test_data, backtest_data, scaler_type="minmax")
 
     train_X, train_Y, test_X, test_Y, btest_X, btest_Y = dl.build_sequences(
         backtest_data_scaled, train_data_scaled, test_data_scaled,
@@ -114,3 +114,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
