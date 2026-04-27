@@ -45,26 +45,69 @@ class EDA:
             ax.annotate(f"{v:.2f}",(d,v),textcoords="offset points",
                         xytext=(0, y_offset + i*2), fontsize=8, color=color, ha="center")
 
-    def forecast_plot(self, df, dates, act, pred):
-        ip_end    = df.index.get_loc(dates[0])
-        ip_start  = ip_end - self.input_window
+    def forecast_plot(self, df, dates, act, pred, seed_preds=None):
+        """
+        df         : full DataFrame
+        dates      : test forecast dates
+        act        : actual values (inverse-scaled)
+        pred       : mean predicted values (inverse-scaled)
+        seed_preds : list of arrays from each seed (used for CI bands)
+                     If None, falls back to ±5% heuristic CI
+        """
+        ip_end = df.index.get_loc(dates[0])
+        ip_start = ip_end - self.input_window
         ctx_start = ip_start - 5
         ctx_dates, input_dates = df.index[ctx_start:ip_start], df.index[ip_start:ip_end]
-        ctx_vals,  input_vals  = df[self.target].values[ctx_start:ip_start], df[self.target].values[ip_start:ip_end]
+        ctx_vals, input_vals = (df[self.target].values[ctx_start:ip_start],
+                                df[self.target].values[ip_start:ip_end])
 
-        fig, ax = plt.subplots(figsize=(14,5)); fig.suptitle(f"Forecast | {self.target}", fontsize=11, fontweight="bold")
-        ax.plot(ctx_dates,   ctx_vals,   color="gray",    lw=1.5, ls="--", label="Context (5 pts)", alpha=0.6)
-        ax.plot(input_dates, input_vals, color="#5C6BC0", lw=1.8, ls="--", label=f"Input ({self.input_window} steps)")
-        ax.plot([input_dates[-1], dates[0]], [input_vals[-1], act[0]], color="#5C6BC0", lw=1, ls="--", alpha=0.3)
-        ax.plot(dates, act,  color="#1565C0", marker="o", lw=2, label="Actual")
+        pred = np.array(pred).flatten()
+        act = np.array(act).flatten()
+
+        # ── Confidence Interval ───────────────────────────────────
+        if seed_preds is not None and len(seed_preds) > 1:
+            # Use std across seeds → 95% CI  (mean ± 1.96 * std)
+            stack = np.stack([np.array(s).flatten() for s in seed_preds], axis=0)
+            ci_std = np.std(stack, axis=0)
+            ci_low = pred - 1.96 * ci_std
+            ci_high = pred + 1.96 * ci_std
+            ci_label = "95% CI (ensemble std)"
+        else:
+            # Fallback: residual-based ±5% band when no seed_preds passed
+            ci_low = pred * 0.95
+            ci_high = pred * 1.05
+            ci_label = "±5% heuristic CI"
+
+        fig, ax = plt.subplots(figsize=(14, 5))
+        fig.suptitle(f"Forecast | {self.target}", fontsize=11, fontweight="bold")
+
+        ax.plot(ctx_dates, ctx_vals, color="gray", lw=1.5, ls="--",
+                label="Context (5 pts)", alpha=0.6)
+        ax.plot(input_dates, input_vals, color="#5C6BC0", lw=1.8, ls="--",
+                label=f"Input ({self.input_window} steps)")
+        ax.plot([input_dates[-1], dates[0]], [input_vals[-1], act[0]],
+                color="#5C6BC0", lw=1, ls="--", alpha=0.3)
+
+        # CI shaded band
+        ax.fill_between(dates, ci_low, ci_high,
+                        color="#C62828", alpha=0.15, label=ci_label)
+
+        # Upper / lower border lines
+        ax.plot(dates, ci_high, color="#C62828", lw=0.8, ls=":", alpha=0.5)
+        ax.plot(dates, ci_low, color="#C62828", lw=0.8, ls=":", alpha=0.5)
+
+        ax.plot(dates, act, color="#1565C0", marker="o", lw=2, label="Actual")
         ax.plot(dates, pred, color="#C62828", marker="^", lw=2, ls="--", label="Predicted")
-        self._annotate(ax, dates, pred,  "#C62828",  12)
-        self._annotate(ax, dates, act,   "#1565C0", -16)
-        ax.legend(); ax.grid(True,ls="--",alpha=0.4)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m")); ax.tick_params(axis="x",rotation=30)
+
+        self._annotate(ax, dates, pred, "#C62828", 12)
+        self._annotate(ax, dates, act, "#1565C0", -16)
+
+        ax.legend()
+        ax.grid(True, ls="--", alpha=0.4)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+        ax.tick_params(axis="x", rotation=30)
         plt.tight_layout()
         self.save("forecast_plot")
-
     def backtest_plot(self, df, dates, act, pred):
         ip_end    = df.index.get_loc(dates[0])
         ip_start  = ip_end - self.input_window
@@ -399,8 +442,9 @@ class EDA:
 
         ax.legend()
         ax.grid(True, ls="--", alpha=0.4)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-        ax.tick_params(axis="x", rotation=30)
+        ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+        ax.tick_params(axis="x", rotation=45)
         plt.tight_layout()
         name = f"forecast_plot{('_' + title_suffix.strip()) if title_suffix else ''}"
         self.save(name)
