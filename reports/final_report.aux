@@ -1,0 +1,205 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\zref@newlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{Contents}{3}{Doc-Start}\protected@file@percent }
+\citation{kilian2009not,hamilton2009causes,baumeister2016forty}
+\citation{tetlock2007giving,shapiro2022measuring,baker2016measuring}
+\citation{leetaru2013gdelt}
+\citation{goldstein1992conflict}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{5}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{5}{Introduction}{section.1}{}}
+\citation{hamilton2009causes,hamilton2003what,kilian2009not}
+\citation{baumeister2016forty}
+\citation{box1976time}
+\citation{durbin2012time}
+\citation{dickey1979distribution}
+\citation{kwiatkowski1992testing}
+\citation{akaike1974new}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Problem Statement}{6}{section.2}\protected@file@percent }
+\newlabel{sec:problem}{{2}{6}{Problem Statement}{section.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Related Work}{6}{section.3}\protected@file@percent }
+\newlabel{sec:related}{{3}{6}{Related Work}{section.3}{}}
+\citation{hochreiter1997long,gers2000learning}
+\citation{lecun1998gradient,sainath2015convolutional,kim2019predicting}
+\citation{cen2019crude,busari2021crude}
+\citation{tetlock2007giving,baker2016measuring,shapiro2022measuring,li2014news}
+\citation{leetaru2013gdelt}
+\citation{goldstein1992conflict}
+\citation{fred2024}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Dataset Description}{7}{section.4}\protected@file@percent }
+\newlabel{sec:dataset}{{4}{7}{Dataset Description}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Target Energy Price Series}{7}{subsection.4.1}\protected@file@percent }
+\citation{leetaru2013gdelt}
+\citation{goldstein1992conflict}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Macroeconomic Indicators from FRED}{8}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Macroeconomic regressors retrieved from FRED. Frequency labels \emph  {D}, \emph  {W}, and \emph  {M} denote native daily, weekly, and monthly resolution, respectively.\relax }}{8}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:fred-series}{{1}{8}{Macroeconomic regressors retrieved from FRED. Frequency labels \emph {D}, \emph {W}, and \emph {M} denote native daily, weekly, and monthly resolution, respectively.\relax }{table.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}News Data from GDELT}{8}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Feature Grouping and Interpretation}{9}{subsection.4.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Interpretive grouping of the exogenous features.\relax }}{9}{table.caption.2}\protected@file@percent }
+\newlabel{tab:feature-groups}{{2}{9}{Interpretive grouping of the exogenous features.\relax }{table.caption.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Data Preparation and Methodology}{9}{section.5}\protected@file@percent }
+\newlabel{sec:methodology}{{5}{9}{Data Preparation and Methodology}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Data Preparation and Preprocessing}{9}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Alignment before modelling.}{9}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Frequency separation.}{9}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Experimental Design and Input Regimes}{10}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Walk-Forward Evaluation Protocol}{10}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:protocol}{{5.3}{10}{Walk-Forward Evaluation Protocol}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Multicollinearity Controls}{10}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:multicol}{{5.4}{10}{Multicollinearity Controls}{subsection.5.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Variance inflation factor (VIF) table after pruning for the WTI monthly multivariate run with $w=24, h=1, b=32$. All retained regressors satisfy $\mathrm  {VIF} \le 10$, confirming that multicollinearity has been adequately controlled.\relax }}{11}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:vif}{{1}{11}{Variance inflation factor (VIF) table after pruning for the WTI monthly multivariate run with $w=24, h=1, b=32$. All retained regressors satisfy $\mathrm {VIF} \le 10$, confirming that multicollinearity has been adequately controlled.\relax }{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Pearson correlation matrix of the retained macro regressors for the WTI monthly multivariate run ($w=24, h=1, b=32$). The matrix reveals the pairwise linear relationship structure among the retained predictors after multicollinearity pruning.\relax }}{11}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:pearson}{{2}{11}{Pearson correlation matrix of the retained macro regressors for the WTI monthly multivariate run ($w=24, h=1, b=32$). The matrix reveals the pairwise linear relationship structure among the retained predictors after multicollinearity pruning.\relax }{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Evaluation Metrics}{11}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:metrics}{{5.5}{11}{Evaluation Metrics}{subsection.5.5}{}}
+\newlabel{eq:metrics}{{1}{12}{Evaluation Metrics}{equation.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}System Architecture}{12}{subsection.5.6}\protected@file@percent }
+\citation{dickey1979distribution}
+\citation{kwiatkowski1992testing}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces End-to-end project architecture. Public data from FRED and GDELT flows through aligned modelling panels, commodity-specific diagnostics, three model families, and a walk-forward evaluation protocol to stored artefacts in the project repository.\relax }}{13}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:arch}{{3}{13}{End-to-end project architecture. Public data from FRED and GDELT flows through aligned modelling panels, commodity-specific diagnostics, three model families, and a walk-forward evaluation protocol to stored artefacts in the project repository.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Classical Time-Series Models}{13}{section.6}\protected@file@percent }
+\newlabel{sec:classical}{{6}{13}{Classical Time-Series Models}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Stationarity Testing}{13}{subsection.6.1}\protected@file@percent }
+\citation{akaike1974new}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Stationarity diagnostic for the first-differenced monthly WTI crude oil series. Both tests confirm stationarity after one round of differencing.\relax }}{14}{table.caption.6}\protected@file@percent }
+\newlabel{tab:stationarity}{{3}{14}{Stationarity diagnostic for the first-differenced monthly WTI crude oil series. Both tests confirm stationarity after one round of differencing.\relax }{table.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Order Selection}{14}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Seasonal Decomposition}{14}{subsection.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Additive seasonal decomposition of the monthly WTI crude oil series. The four panels display the original series, the trend component, the seasonal component with period $s=12$, and the residual noise.\relax }}{15}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:decomp}{{4}{15}{Additive seasonal decomposition of the monthly WTI crude oil series. The four panels display the original series, the trend component, the seasonal component with period $s=12$, and the residual noise.\relax }{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}ARIMA — Autoregressive Integrated Moving Average}{15}{subsection.6.4}\protected@file@percent }
+\newlabel{eq:arima}{{2}{15}{ARIMA — Autoregressive Integrated Moving Average}{equation.6.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}SARIMA — Seasonal ARIMA}{15}{subsection.6.5}\protected@file@percent }
+\citation{hochreiter1997long,gers2000learning}
+\citation{sainath2015convolutional,lecun1998gradient}
+\newlabel{eq:sarima}{{3}{16}{SARIMA — Seasonal ARIMA}{equation.6.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6}SARIMAX — Seasonal ARIMA with Exogenous Regressors}{16}{subsection.6.6}\protected@file@percent }
+\newlabel{eq:sarimax}{{4}{16}{SARIMAX — Seasonal ARIMA with Exogenous Regressors}{equation.6.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Neural Network Models}{16}{section.7}\protected@file@percent }
+\newlabel{sec:neural}{{7}{16}{Neural Network Models}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}LSTM — Long Short-Term Memory}{16}{subsection.7.1}\protected@file@percent }
+\newlabel{eq:lstm-gates}{{5}{16}{LSTM — Long Short-Term Memory}{equation.7.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Architecture.}{16}{equation.7.5}\protected@file@percent }
+\citation{kingma2015adam}
+\citation{akiba2019optuna}
+\citation{huber1964robust}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}CNN + LSTM — Convolutional Recurrent Network}{17}{subsection.7.2}\protected@file@percent }
+\newlabel{eq:conv1d}{{6}{17}{CNN + LSTM — Convolutional Recurrent Network}{equation.7.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Architecture.}{17}{equation.7.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Training Setup}{17}{subsection.7.3}\protected@file@percent }
+\newlabel{eq:huber}{{7}{17}{Training Setup}{equation.7.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Results and Analysis}{17}{section.8}\protected@file@percent }
+\newlabel{sec:results}{{8}{17}{Results and Analysis}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Univariate Baselines}{18}{subsection.8.1}\protected@file@percent }
+\newlabel{sec:res-uni}{{8.1}{18}{Univariate Baselines}{subsection.8.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Selected univariate model outputs. Metrics are reported on the test slice. Configurations are included only where stored metric artefacts are available.\relax }}{18}{table.caption.8}\protected@file@percent }
+\newlabel{tab:uni-results}{{4}{18}{Selected univariate model outputs. Metrics are reported on the test slice. Configurations are included only where stored metric artefacts are available.\relax }{table.caption.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{WTI crude oil univariate results.}{18}{table.caption.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Henry Hub natural gas univariate results.}{18}{table.caption.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Two-order aggregated SARIMA forecast on the WTI monthly test block versus the actual price path. The forecast tracks the general direction of movement, though it lags the magnitude of sharp price movements.\relax }}{19}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:uni-oil-forecast}{{5}{19}{Two-order aggregated SARIMA forecast on the WTI monthly test block versus the actual price path. The forecast tracks the general direction of movement, though it lags the magnitude of sharp price movements.\relax }{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Multivariate Models — WTI Crude Oil}{19}{subsection.8.2}\protected@file@percent }
+\newlabel{sec:res-multi-oil}{{8.2}{19}{Multivariate Models — WTI Crude Oil}{subsection.8.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Selected multivariate outputs for WTI crude oil. The news-plus-macro LSTM (24,5,32) achieves the lowest monthly RMSE of 2.921 at a five-step horizon.\relax }}{19}{table.caption.10}\protected@file@percent }
+\newlabel{tab:oil-multi}{{5}{19}{Selected multivariate outputs for WTI crude oil. The news-plus-macro LSTM (24,5,32) achieves the lowest monthly RMSE of 2.921 at a five-step horizon.\relax }{table.caption.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{Key observations.}{19}{table.caption.10}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces WTI monthly LSTM trained on news-plus-macro inputs, configuration $(w=24, h=5, b=32)$. The forecast panel shows a coherent five-step trajectory, and the loss curves indicate stable convergence without severe overfitting.\relax }}{20}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:oil-selected}{{6}{20}{WTI monthly LSTM trained on news-plus-macro inputs, configuration $(w=24, h=5, b=32)$. The forecast panel shows a coherent five-step trajectory, and the loss curves indicate stable convergence without severe overfitting.\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Multivariate Models — Henry Hub Natural Gas}{20}{subsection.8.3}\protected@file@percent }
+\newlabel{sec:res-multi-cng}{{8.3}{20}{Multivariate Models — Henry Hub Natural Gas}{subsection.8.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Selected multivariate outputs for Henry Hub natural gas. The news-plus-macro CNN\,+\,LSTM (36,5,32) achieves the best test RMSE of 1.153 with the only positive $R^2 = +0.550$.\relax }}{20}{table.caption.12}\protected@file@percent }
+\newlabel{tab:cng-multi}{{6}{20}{Selected multivariate outputs for Henry Hub natural gas. The news-plus-macro CNN\,+\,LSTM (36,5,32) achieves the best test RMSE of 1.153 with the only positive $R^2 = +0.550$.\relax }{table.caption.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{Key observations.}{20}{table.caption.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Henry Hub monthly CNN\,+\,LSTM trained on news-plus-macro inputs, configuration $(w=36, h=5, b=32)$. The forecast panel shows stable monthly movement on the test horizon; the backtest panel provides an additional diagnostic view of generalisation stability outside the training window.\relax }}{21}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:cng-selected}{{7}{21}{Henry Hub monthly CNN\,+\,LSTM trained on news-plus-macro inputs, configuration $(w=36, h=5, b=32)$. The forecast panel shows stable monthly movement on the test horizon; the backtest panel provides an additional diagnostic view of generalisation stability outside the training window.\relax }{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Summary Comparison}{21}{subsection.8.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Summary of best test-slice RMSE per condition. Each cell shows the minimum RMSE achieved and the corresponding model configuration.\relax }}{21}{table.caption.14}\protected@file@percent }
+\newlabel{tab:summary-comparison}{{7}{21}{Summary of best test-slice RMSE per condition. Each cell shows the minimum RMSE achieved and the corresponding model configuration.\relax }{table.caption.14}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Discussion}{21}{section.9}\protected@file@percent }
+\newlabel{sec:discussion}{{9}{21}{Discussion}{section.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Value of News-Plus-Macro Fusion}{21}{subsection.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Commodity Differences}{22}{subsection.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Classical vs.\ Neural Behaviour}{22}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Hyperparameter Sensitivity}{22}{subsection.9.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Limitations}{23}{section.10}\protected@file@percent }
+\newlabel{sec:limits}{{10}{23}{Limitations}{section.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{Alignment and aggregation smoothing.}{23}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Finite test windows.}{23}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{External shocks not fully captured.}{23}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Breadth of completed experiments.}{23}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Event-level news representation.}{23}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Future Work}{23}{section.11}\protected@file@percent }
+\newlabel{sec:future-work}{{11}{23}{Future Work}{section.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Feature engineering.}{23}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Advanced architectures.}{24}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Real-time pipeline.}{24}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Additional external data.}{24}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}Conclusion}{24}{section.12}\protected@file@percent }
+\newlabel{sec:conclusion}{{12}{24}{Conclusion}{section.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {13}Reproducibility Statement}{25}{section.13}\protected@file@percent }
+\newlabel{sec:reproducibility}{{13}{25}{Reproducibility Statement}{section.13}{}}
+\bibstyle{plainnat}
+\bibcite{akaike1974new}{{1}{1974}{{Akaike}}{{}}}
+\bibcite{akiba2019optuna}{{2}{2019}{{Akiba et al.}}{{}}}
+\bibcite{baker2016measuring}{{3}{2016}{{Baker et al.}}{{}}}
+\bibcite{baumeister2016forty}{{4}{2016}{{Baumeister and Kilian}}{{}}}
+\bibcite{box1976time}{{5}{1976}{{Box and Jenkins}}{{}}}
+\bibcite{busari2021crude}{{6}{2021}{{Busari and Lim}}{{}}}
+\bibcite{cen2019crude}{{7}{2019}{{Cen and Wang}}{{}}}
+\bibcite{dickey1979distribution}{{8}{1979}{{Dickey and Fuller}}{{}}}
+\bibcite{durbin2012time}{{9}{2012}{{Durbin and Koopman}}{{}}}
+\bibcite{fred2024}{{10}{2024}{{Federal Reserve}}{{}}}
+\bibcite{gers2000learning}{{11}{2000}{{Gers et al.}}{{}}}
+\bibcite{goldstein1992conflict}{{12}{1992}{{Goldstein}}{{}}}
+\bibcite{hamilton2003what}{{13}{2003}{{Hamilton}}{{}}}
+\bibcite{hamilton2009causes}{{14}{2009}{{Hamilton}}{{}}}
+\@writefile{toc}{\contentsline {section}{Bibliography}{26}{section.13}\protected@file@percent }
+\bibcite{hochreiter1997long}{{15}{1997}{{Hochreiter and Schmidhuber}}{{}}}
+\bibcite{huber1964robust}{{16}{1964}{{Huber}}{{}}}
+\bibcite{hyndman2018forecasting}{{17}{2018}{{Hyndman and Athanasopoulos}}{{}}}
+\bibcite{kilian2009not}{{18}{2009}{{Kilian}}{{}}}
+\bibcite{kim2019predicting}{{19}{2018}{{Kim and Won}}{{}}}
+\bibcite{kingma2015adam}{{20}{2015}{{Kingma and Ba}}{{}}}
+\bibcite{kwiatkowski1992testing}{{21}{1992}{{Kwiatkowski et al.}}{{}}}
+\bibcite{lecun1998gradient}{{22}{1998}{{LeCun et al.}}{{}}}
+\bibcite{leetaru2013gdelt}{{23}{2013}{{Leetaru and Schrodt}}{{}}}
+\bibcite{li2014news}{{24}{2014}{{Li et al.}}{{}}}
+\bibcite{sainath2015convolutional}{{25}{2015}{{Sainath et al.}}{{}}}
+\bibcite{shapiro2022measuring}{{26}{2022}{{Shapiro et al.}}{{}}}
+\bibcite{tetlock2007giving}{{27}{2007}{{Tetlock}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Formula Reference and Notation}{28}{appendix.1.A}\protected@file@percent }
+\newlabel{app:formula-reference}{{A}{28}{Formula Reference and Notation}{appendix.1.A}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Formula locations and their purpose in this report.\relax }}{28}{table.caption.15}\protected@file@percent }
+\newlabel{tab:formula-reference}{{8}{28}{Formula locations and their purpose in this report.\relax }{table.caption.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{Notation summary.}{28}{table.caption.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Neural Configuration Notation}{28}{appendix.1.B}\protected@file@percent }
+\newlabel{app:configuration-notation}{{B}{28}{Neural Configuration Notation}{appendix.1.B}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Metric Interpretation Guide}{28}{appendix.1.C}\protected@file@percent }
+\newlabel{app:metric-reading}{{C}{28}{Metric Interpretation Guide}{appendix.1.C}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Interpretation guide for the reported evaluation metrics.\relax }}{28}{table.caption.16}\protected@file@percent }
+\newlabel{tab:metric-guide}{{9}{28}{Interpretation guide for the reported evaluation metrics.\relax }{table.caption.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Artifact Traceability}{29}{appendix.1.D}\protected@file@percent }
+\newlabel{app:artifact-traceability}{{D}{29}{Artifact Traceability}{appendix.1.D}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Traceability map for reported tables and figures.\relax }}{29}{table.caption.17}\protected@file@percent }
+\newlabel{tab:artifact-map}{{10}{29}{Traceability map for reported tables and figures.\relax }{table.caption.17}{}}
+\gdef \@abspage@last{31}

@@ -1,0 +1,64 @@
+\contentsline {section}{Contents}{3}{Doc-Start}%
+\contentsline {section}{\numberline {1}Introduction}{5}{section.1}%
+\contentsline {section}{\numberline {2}Problem Statement}{6}{section.2}%
+\contentsline {section}{\numberline {3}Related Work}{6}{section.3}%
+\contentsline {section}{\numberline {4}Dataset Description}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Target Energy Price Series}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Macroeconomic Indicators from FRED}{8}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}News Data from GDELT}{8}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Feature Grouping and Interpretation}{9}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Data Preparation and Methodology}{9}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Data Preparation and Preprocessing}{9}{subsection.5.1}%
+\contentsline {paragraph}{Alignment before modelling.}{9}{subsection.5.1}%
+\contentsline {paragraph}{Frequency separation.}{9}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Experimental Design and Input Regimes}{10}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Walk-Forward Evaluation Protocol}{10}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Multicollinearity Controls}{10}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Evaluation Metrics}{11}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}System Architecture}{12}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Classical Time-Series Models}{13}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Stationarity Testing}{13}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Order Selection}{14}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Seasonal Decomposition}{14}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}ARIMA — Autoregressive Integrated Moving Average}{15}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}SARIMA — Seasonal ARIMA}{15}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}SARIMAX — Seasonal ARIMA with Exogenous Regressors}{16}{subsection.6.6}%
+\contentsline {section}{\numberline {7}Neural Network Models}{16}{section.7}%
+\contentsline {subsection}{\numberline {7.1}LSTM — Long Short-Term Memory}{16}{subsection.7.1}%
+\contentsline {paragraph}{Architecture.}{16}{equation.7.5}%
+\contentsline {subsection}{\numberline {7.2}CNN + LSTM — Convolutional Recurrent Network}{17}{subsection.7.2}%
+\contentsline {paragraph}{Architecture.}{17}{equation.7.6}%
+\contentsline {subsection}{\numberline {7.3}Training Setup}{17}{subsection.7.3}%
+\contentsline {section}{\numberline {8}Results and Analysis}{17}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Univariate Baselines}{18}{subsection.8.1}%
+\contentsline {paragraph}{WTI crude oil univariate results.}{18}{table.caption.8}%
+\contentsline {paragraph}{Henry Hub natural gas univariate results.}{18}{table.caption.8}%
+\contentsline {subsection}{\numberline {8.2}Multivariate Models — WTI Crude Oil}{19}{subsection.8.2}%
+\contentsline {paragraph}{Key observations.}{19}{table.caption.10}%
+\contentsline {subsection}{\numberline {8.3}Multivariate Models — Henry Hub Natural Gas}{20}{subsection.8.3}%
+\contentsline {paragraph}{Key observations.}{20}{table.caption.12}%
+\contentsline {subsection}{\numberline {8.4}Summary Comparison}{21}{subsection.8.4}%
+\contentsline {section}{\numberline {9}Discussion}{21}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Value of News-Plus-Macro Fusion}{21}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Commodity Differences}{22}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Classical vs.\ Neural Behaviour}{22}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Hyperparameter Sensitivity}{22}{subsection.9.4}%
+\contentsline {section}{\numberline {10}Limitations}{23}{section.10}%
+\contentsline {paragraph}{Alignment and aggregation smoothing.}{23}{section.10}%
+\contentsline {paragraph}{Finite test windows.}{23}{section.10}%
+\contentsline {paragraph}{External shocks not fully captured.}{23}{section.10}%
+\contentsline {paragraph}{Breadth of completed experiments.}{23}{section.10}%
+\contentsline {paragraph}{Event-level news representation.}{23}{section.10}%
+\contentsline {section}{\numberline {11}Future Work}{23}{section.11}%
+\contentsline {paragraph}{Feature engineering.}{23}{section.11}%
+\contentsline {paragraph}{Advanced architectures.}{24}{section.11}%
+\contentsline {paragraph}{Real-time pipeline.}{24}{section.11}%
+\contentsline {paragraph}{Additional external data.}{24}{section.11}%
+\contentsline {section}{\numberline {12}Conclusion}{24}{section.12}%
+\contentsline {section}{\numberline {13}Reproducibility Statement}{25}{section.13}%
+\contentsline {section}{Bibliography}{26}{section.13}%
+\contentsline {section}{\numberline {A}Formula Reference and Notation}{28}{appendix.1.A}%
+\contentsline {paragraph}{Notation summary.}{28}{table.caption.15}%
+\contentsline {section}{\numberline {B}Neural Configuration Notation}{28}{appendix.1.B}%
+\contentsline {section}{\numberline {C}Metric Interpretation Guide}{28}{appendix.1.C}%
+\contentsline {section}{\numberline {D}Artifact Traceability}{29}{appendix.1.D}%
