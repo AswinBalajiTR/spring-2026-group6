@@ -1,4 +1,4 @@
-# Energy Price Forecasting using Macro Indicators and News Data
+# Forecasting of Energy Prices Using Economic Indicators and GDELT Derived News Signals
 
 Time series analysis and forecasting of Energy prices (CNG & Crude Oil) with help of macro economic variables and global News data.
 
@@ -20,19 +20,18 @@ Time series analysis and forecasting of Energy prices (CNG & Crude Oil) with hel
 ```
 spring-2026-group6/
 ├── Code/
-│   ├── eda.py                        # Time Series EDA toolkit (class-based)
+│   ├── eda.py       # Time Series EDA toolkit (class-based)
+│   ├── models.py 
+│   ├── dataloader.py 
+│   ├── download.py 
 │   └── Univariate_model/
-│       └── crude_oil.py              # Main modelling script
+│       └──  
+│   └── Multivariate_model/
+│       └── crude_oil.py             
 ├── Data/
 │   └── wti_crude_oil.csv             # Raw WTI price data
 └── Results/                          # Auto-generated SVG outputs
-    ├── WTI_series.svg
-    ├── WTI_stationarity.svg
-    ├── WTI_diff_acf_pacf.svg
-    ├── WTI_diff_seasonality.svg
-    ├── WTI_diff_decomposition.svg
-    ├── model_comparison.svg
-    └── forecast_plot.svg
+
 ```
 
 ---
