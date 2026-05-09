@@ -52,11 +52,17 @@
 \usepackage{textcomp}%
 \usepackage{manyfoot}%
 \usepackage{booktabs}%
+\usepackage{tabularx}%
 \usepackage{algorithm}%
 \usepackage{algorithmicx}%
 \usepackage{algpseudocode}%
+\usepackage{float}%
 \usepackage{listings}%
 \usepackage{caption}%
+\usepackage{subcaption}%
+\floatname{algorithm}{Procedure}
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
 \setlength{\textfloatsep}{4pt plus 1pt minus 1pt}%
 \setlength{\floatsep}{4pt plus 1pt minus 1pt}%
 \setlength{\intextsep}{4pt plus 1pt minus 1pt}%
@@ -98,7 +104,7 @@
 
 \begin{document}
 
-\title[Time Series Forecasting of Energy Commodity Prices Using Macro Economic Indicators and GDELT Derived News Signals]{Time Series Forecasting of Energy Commodity Prices Using Macro Economic Indicators and GDELT Derived News Signals}
+\title[Time Series Forecasting of Energy Commodity Prices Using Macroeconomic Indicators and GDELT Derived News Signals]{Time Series Forecasting of Energy Commodity Prices Using Macroeconomic Indicators and GDELT Derived News Signals}
 
 %%=============================================================%%
 %% GivenName	-> \fnm{Joergen W.}
@@ -121,7 +127,7 @@
 %% Sample for unstructured abstract %%
 %%==================================%%
 
-\abstract{Accurate forecasting of energy commodity prices --- particularly West Texas Intermediate (WTI) crude oil and Henry Hub natural gas --- remains a persistent methodological challenge, owing to their intrinsic price volatility, pronounced sensitivity to geopolitical disruptions, and structurally complex dependence on macroeconomic cycles. This paper examines whether macroeconomic indicators from the Federal Reserve Economic Data (FRED) database and news-based signals derived from the Global Database of Events, Language, and Tone (GDELT) improve forecasting performance relative to standard price-only baselines. The analysis covers a full forecasting pipeline, including stationarity testing, seasonal decomposition, feature transformation, and multivariate modeling with both classical statistical methods and neural architectures with exogenous inputs. Hyperparameters were tuned with Optuna using 30 trials for each model configuration. Model performance was evaluated with Root Mean Squared Error (RMSE) and further checked with walk-forward backtesting. Empirical results indicate that, while point-level forecast accuracy remained constrained across all configurations, the proposed multivariate framework exhibited a meaningful capacity to identify directional price movements and cyclical turning points that univariate baseline models systematically failed to detect. Collectively, these findings suggest that heterogeneous data fusion holds substantive promise for US energy price modeling, while simultaneously underscoring the practical limitations of aggregated news-derived features in high-frequency commodity forecasting contexts.}
+\abstract{Accurate forecasting of energy commodity prices --- particularly West Texas Intermediate (WTI) crude oil and Henry Hub natural gas --- remains a persistent methodological challenge, owing to their intrinsic price volatility, pronounced sensitivity to geopolitical disruptions, and structurally complex dependence on macroeconomic cycles. This paper examines whether macroeconomic indicators from the Federal Reserve Economic Data (FRED) database and news-based signals derived from the Global Database of Events, Language, and Tone (GDELT) improve forecasting performance relative to standard price-only baselines. The analysis covers a full forecasting pipeline, including stationarity testing, seasonal decomposition, feature transformation, and multivariate modeling with both classical statistical methods and neural architectures with exogenous inputs. We tuned hyperparameters with Optuna using 30 trials for each model configuration. We evaluated model performance with Root Mean Squared Error (RMSE) and further checked it with walk-forward backtesting. Empirical results indicate that, while point-level forecast accuracy remained constrained across all configurations, the proposed multivariate framework exhibited a meaningful capacity to identify directional price movements and cyclical turning points that univariate baseline models systematically failed to detect. Collectively, these findings suggest that heterogeneous data fusion holds substantive promise for US energy price modeling, while simultaneously underscoring the practical limitations of aggregated news-derived features in high-frequency commodity forecasting contexts.}
 
 %%================================%%
 %% Sample for structured abstract %%
@@ -147,11 +153,9 @@
 
 Energy commodity prices --- most prominently crude oil and natural gas --- serve as first-order indicators of global economic activity and are deeply embedded in the transmission mechanisms of inflation, industrial output, and monetary policy~\cite{baumeister2016,hamilton2009,kilian2009}. Changes in these prices affect transportation costs, household energy bills, production decisions, and inflation expectations, so even modest improvements in forecasting can matter for policymakers, firms, and investors~\cite{baumeister2016,hamilton2009}. At the same time, forecasting is difficult because price movements reflect a shifting mix of supply imbalances, geopolitical disruptions, business-cycle conditions, and financial-market behavior~\cite{hamilton2003,kilian2009}.
 
-Traditional forecasting approaches have predominantly relied on univariate time series models, wherein predictions are derived exclusively from the autoregressive structure of historical price data, with no incorporation of exogenous drivers~\cite{box1976,hyndman2018}. ARIMA and SARIMA remain standard choices because they are interpretable, data-efficient, and easy to benchmark~\cite{box1976,hyndman2018}. Their use also requires attention to properties such as stationarity and autocorrelation, which are typically assessed with tests such as Augmented Dickey--Fuller and KPSS~\cite{dickey1979,kwiatkowski1992}. More recently, deep learning models, including Long Short-Term Memory networks~\cite{hochreiter1997,gers2000} and CNN--LSTM hybrids~\cite{sainath2015}, have been used to capture more complex temporal structure. Despite their representational flexibility, no single model architecture has been shown to consistently outperform competing approaches across varying market regimes, price levels, or volatility conditions~\cite{baumeister2016,hyndman2018}.
+Energy-price forecasting has therefore been studied through both classical time-series models and more flexible neural architectures, but no single model family consistently dominates across commodities and market regimes~\cite{box1976,hyndman2018,hochreiter1997,sainath2015}. In parallel, prior work suggests that macroeconomic context and news-driven information may add signal beyond price history alone, motivating comparative evaluation of structured external features alongside standard univariate baselines~\cite{kilian2009,tetlock2007,shapiro2022,leetaru2013}.
 
-A growing body of empirical literature has underscored the predictive value of incorporating structured external information into energy price forecasting models, moving beyond the assumption that price histories alone contain sufficient signal~\cite{hamilton2003,kilian2009,tetlock2007}. Energy prices respond to macroeconomic conditions and to event-driven information that often reaches markets through the news~\cite{hamilton2003,kilian2009,tetlock2007}. Indicators available through the Federal Reserve Economic Data (FRED) platform~\cite{fred2025} - including industrial production, exchange rates, and volatility measures - offer a compact view of the broader economic setting in which energy demand and risk perceptions evolve~\cite{kilian2009,baumeister2016}. In parallel, news-based variables have proved useful in financial forecasting~\cite{tetlock2007,shapiro2022,baker2016}. The Global Database of Events, Language, and Tone (GDELT)~\cite{leetaru2013} is especially useful here because it translates large volumes of news into structured event data, including variables such as the Goldstein scale~\cite{goldstein1992} and average tone, without requiring a full text-processing pipeline~\cite{leetaru2013,li2014}. Prior research suggests that event-driven signals can contribute meaningfully to understanding directional price fluctuations, even in cases where the corresponding reductions in point-level forecast error are modest or statistically marginal~\cite{shapiro2022}.
-
-Still, work that evaluates price history, macroeconomic variables, and news-based signals within one shared forecasting framework is relatively limited~\cite{baumeister2016,shapiro2022}. Univariate models capture persistence in the series but ignore outside information. Multivariate models are more informative, but their gains are not always stable or easy to compare across studies~\cite{box1976,baumeister2016,hyndman2018}. Many papers also focus on one commodity, one model family, or one external data source at a time. That makes it hard to judge the relative value of macroeconomic indicators and event-driven news under the same evaluation design. To address that issue, we build a reproducible forecasting framework that compares classical statistical models and hybrid neural architectures across four settings: univariate, macro-only, news-only, and combined features. All models are evaluated with the same walk-forward validation logic and the same error metrics.
+Still, work that evaluates price history, macroeconomic variables, and news-based signals within one shared forecasting framework is relatively limited~\cite{baumeister2016,shapiro2022}. Univariate models capture persistence in the series but ignore outside information. Multivariate models are more informative, but their gains are not always stable or easy to compare across studies~\cite{box1976,baumeister2016,hyndman2018}. Many papers also focus on one commodity, one model family, or one external data source at a time. That makes it hard to judge the relative value of macroeconomic indicators and event-driven news under the same evaluation design. To address that issue, we build a reproducible forecasting framework that compares classical statistical models and hybrid neural architectures across four settings: univariate, macro-only, news-only, and combined features. We evaluate all models with the same walk-forward validation logic and the same error metrics.
 
 The main expectation is that external information should be most useful when macroeconomic indicators and news-derived signals are considered together rather than separately. More specifically, we test whether macroeconomic variables improve upon univariate baselines, whether GDELT-derived signals contribute additional information, and whether the joint feature space produces stronger directional performance than either feature group on its own.
 
@@ -190,7 +194,7 @@ Taken together, the literature points to three main conclusions that motivate th
 
 Despite these advances, a unified benchmarking framework that simultaneously compares the isolated and joint contributions of macroeconomic and news-based signals --- using both test-set accuracy and temporal walk-forward backtesting --- remains absent from the literature. The present study addresses this gap by providing such a framework across two distinct energy commodities.
 
-\section{Dataset}\label{secdata}
+\section{Data}\label{secdata}
 
 This study uses two main data sources: macroeconomic indicators and global news event data. The objective is to integrate structured macroeconomic signals with event-driven geopolitical information in a temporally aligned and methodologically consistent framework, thereby enabling a rigorous assessment of their respective and joint contributions to energy price predictability. Macroeconomic variables capture the broader economic setting, while news-based signals provide a partial view of real-world events, sentiment, and market stress. Using both sources together allows us to examine whether they contribute distinct and complementary information for energy-price prediction.
 
@@ -216,97 +220,11 @@ Natural Gas Price & DHHNGSP & Natural gas spot price \\
 \end{tabular}
 \end{table}
 
-These series represent the dependent variables in both the univariate and multivariate models.
-
-\subsubsection{Macroeconomic Variables}\label{subsubsec:macrovars}
-
-In addition to the target variables, we include a set of macroeconomic indicators as explanatory variables. Together, they capture several aspects of economic activity, including demand conditions, inflation, exchange rates, and market uncertainty.
-
-\begin{table}[h]
-\caption{Macroeconomic variables from FRED}\label{tab:macro_variables}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Variable Name & FRED Code & Description \\
-\midrule
-Brent Oil Price & DCOILBRENTEU & Global crude oil benchmark \\
-Gasoline Price & GASREGCOVW & US gasoline price \\
-USD Index & DTWEXBGS & Trade weighted USD index \\
-Real USD Index & RTWEXBGS & Inflation adjusted USD index \\
-USD/EUR Exchange Rate & DEXUSEU & Currency exchange rate \\
-Oil Volatility Index & OVXCLS & Crude oil market volatility \\
-Industrial Production & INDPRO & Overall industrial output \\
-Drilling Production & IPN213111S & Oil and gas drilling activity \\
-Capacity Utilization & TCU & Industrial capacity usage \\
-Oil Gas Capacity Util & CAPUTLG211S & Capacity utilization in oil and gas sector \\
-Natural Gas Electric & GASDESW & Natural gas consumption in electricity generation \\
-CPI & CPIAUCSL & Consumer price index \\
-PPI Energy & PPIENG & Producer price index for energy \\
-PPI Crude Petroleum & WPU0561 & Crude petroleum price index \\
-PCE & PCEPI & Personal consumption expenditure index \\
-\botrule
-\end{tabular}
-\end{table}
-
-Taken together, these variables provide a broad representation of macroeconomic conditions that may influence energy prices directly or indirectly.
-
-\subsection{GDELT Data}\label{subsec:gdeltdata}
-
-The second dataset comes from the Global Database of Events, Language, and Tone (GDELT), a large-scale global news event database. GDELT records structured information about events reported in news sources around the world. Although the database extends back to 1979, we focus on data from 2014 onward because coverage and consistency are stronger over that period.
-
-The raw GDELT dataset is extremely large in scale, encompassing hundreds of millions of event records globally, with individual daily extracts routinely exceeding 200{,}000 entries. Given this volume, targeted filtering and aggregation procedures were essential to yield a computationally tractable and analytically focused representation of the data. Each record contains information such as event date, actors, countries, event type, sentiment, and geolocation.
-
-To keep the event data aligned with the rest of the analysis, we retain only events related to the United States, meaning that at least one participating country corresponds to the US. This geographic filtering criterion ensures thematic alignment between the event-driven news signals and the US-centric macroeconomic variables employed throughout the analysis.
-
-\subsubsection{GDELT Features}\label{subsubsec:gdeltfeatures}
-
-GDELT provides many fields, including event date, actor and country information, event code, Goldstein scale, average tone, source URL, number of mentions, and geolocation. For modeling purposes, however, we retain only a subset of these features, as summarized in Table~\ref{tab:gdelt_features}.\\
-
-These features were retained because they capture different aspects of the news stream without requiring full-text modeling. Event Code reflects the type of reported activity, Goldstein Scale measures conflict or cooperation intensity, and Average Tone serves as a compact proxy for sentiment. At the same time, these variables are aggregated summaries, so they inevitably miss some event-specific context, reporting bias, and timing variation that may matter for forecasting.
-
-\begin{table}[h]
-\caption{Selected GDELT features}\label{tab:gdelt_features}
-\begin{tabular}{@{}ll@{}}
-\toprule
-Feature Name & Description \\
-\midrule
-Event Code & Categorical representation of event type \\
-Goldstein Scale & Numerical measure of conflict or cooperation intensity \\
-Average Tone & Sentiment score of news articles \\
-Date & Event occurrence date \\
-\botrule
-\end{tabular}
-\end{table}
-
-Because the macroeconomic and news datasets come from different sources and have different temporal resolutions, they are processed separately before being combined. The final alignment is done using a common date index, and only the overlapping period is retained. This keeps the feature space consistent and avoids avoidable misalignment problems.
-
-\section{Methodology}\label{sec2}
-
-This section describes the end-to-end pipeline used in the study, from preprocessing to forecasting. The goal is to convert raw macroeconomic and news data into a structured format that supports a fair comparison across modeling approaches.
-
-\subsection{Data Preprocessing}\label{subsec:datapreprocessing}
-
-The preprocessing pipeline is designed to transform heterogeneous raw inputs from macroeconomic and news event sources into a temporally consistent, statistically clean, and model-ready format suitable for both classical statistical and neural network-based time series forecasting.
-
-\subsubsection{Macroeconomic Data Processing (FRED)}\label{subsubsec:fredprocessing}
-
-We first align the FRED variables on a common date index. Because the series come at mixed frequencies (daily, weekly, and monthly), we construct two datasets:
-
-\begin{itemize}
-\item A daily dataset containing only daily variables.
-\item A monthly dataset, where we aggregate all variables, including higher-frequency data, to the monthly level.
-\end{itemize}
-
-Missing observations arising from non-trading days, data release lags, or differing source frequencies are addressed via forward filling, a standard imputation technique that propagates the last observed value forward in time, thereby preserving temporal continuity without introducing artificial variation. To reduce redundancy and improve model stability, we also evaluate multicollinearity with the Variance Inflation Factor (VIF). For each macroeconomic predictor $X_j$, the VIF is computed as
-
-\begin{equation}
-\mathrm{VIF}(X_j) = \frac{1}{1 - R_j^2},
-\end{equation}
-
-where $R_j^2$ is the coefficient of determination obtained by regressing $X_j$ on the remaining predictors. Variables with $\mathrm{VIF} > 8$ are excluded because values above this threshold indicate substantial multicollinearity and can destabilize estimation. After screening, the retained macroeconomic predictors were \textit{ind\_prod\_drill} ($\mathrm{VIF}=3.67$), \textit{real\_usd\_index} ($\mathrm{VIF}=2.47$), \textit{brent\_crude\_oil} ($\mathrm{VIF}=2.16$), \textit{cap\_util} ($\mathrm{VIF}=2.13$), \textit{cap\_util\_oil\_gas} ($\mathrm{VIF}=1.88$), and \textit{volatility\_index} ($\mathrm{VIF}=1.70$). Table~\ref{tab:vif_macro_features} lists the retained variables and their VIF values.
+The retained macroeconomic block used in the later multivariate models consists of \textit{ind\_prod\_drill}, \textit{real\_usd\_index}, \textit{brent\_crude\_oil}, \textit{cap\_util}, and \textit{volatility\_index}. Table~\ref{tab:vif_macro_features} reports their post-screening VIF values, while Figure~\ref{fig:macro_correlation_heatmap} provides a compact visual summary of how these retained FRED variables co-move with WTI crude oil and Henry Hub natural gas.
 
 \begin{table}[t]
 \centering
-\caption{VIF values for retained macros.}
+\caption{VIF values for retained macroeconomic features.}
 \label{tab:vif_macro_features}
 \begin{tabular}{lc}
 \toprule
@@ -316,21 +234,59 @@ Feature & VIF \\
 \textit{real\_usd\_index} & 2.47 \\
 \textit{brent\_crude\_oil} & 2.16 \\
 \textit{cap\_util} & 2.13 \\
-\textit{cap\_util\_oil\_gas} & 1.88 \\
 \textit{volatility\_index} & 1.70 \\
-\bottomrule
+\botrule
 \end{tabular}
 \end{table}
 
-For the neural-network models, all continuous inputs are normalized before sequence construction so that variables on very different scales do not dominate optimization. This improves training stability and makes the learned representations more comparable across feature groups.
+The heatmap helps motivate the macroeconomic feature block in two ways. First, it shows that several retained predictors --- especially drilling activity, the real dollar index, and Brent prices --- have visible linear association with the target series, which supports their inclusion as economically meaningful covariates rather than arbitrary additions. Second, the predictor block does not appear dominated by near-perfect pairwise dependence, which is consistent with the moderate VIF values in Table~\ref{tab:vif_macro_features}. In this sense, the heatmap complements the VIF table: the table screens out problematic redundancy, while the figure shows why the remaining FRED variables are still informative enough to justify multivariate modeling.
+
+For the neural-network models, all continuous inputs are normalized before sequence construction so that variables on very different scales do not dominate optimization. This improves training stability and makes the learned representations more comparable across feature groups. Normalization parameters (mean and standard deviation) were computed exclusively on the training partition and subsequently applied to the validation and test sets to prevent data leakage.
+
+\begin{figure}[t]
+\centering
+\includesvg[width=0.92\linewidth]{figures/corr}
+\caption{Pearson correlation heatmap for retained FRED variables and target prices.}
+\label{fig:macro_correlation_heatmap}
+\end{figure}
+
 
 \subsubsection{GDELT Data Processing}\label{subsubsec:gdeltprocessing}
 
-The GDELT data are processed to extract a compact set of signals from a very large event archive. The main steps include retaining only US-related events, one-hot encoding `EventCode', aggregating event counts daily, and computing summary measures such as average Goldstein Scale and average tone. When needed, these series are further aggregated to the monthly level. The result is a more compact and interpretable time-series representation of event activity.
+We process the GDELT data to extract a compact set of signals from a very large event archive. The main steps include retaining only US-related events, one-hot encoding `EventCode', aggregating event counts daily, and computing summary measures such as average Goldstein Scale and average tone. When needed, these series are further aggregated to the monthly level. The result is a more compact and interpretable time-series representation of event activity. Procedure~\ref{alg:gdelt_processing} formalizes this transformation from raw event records to aggregated forecasting inputs.
+
+\begin{algorithm}[H]
+\caption{GDELT Data Processing and Feature Extraction}
+\label{alg:gdelt_processing}
+\begin{algorithmic}[1]
+\Require Raw GDELT event records $R$, target country $C=\text{US}$, target frequency $\text{freq}=\text{monthly}$
+\Ensure Aggregated feature matrix $G_{\text{agg}}$ indexed by month
+\State $R_{\text{US}} \gets \{r \in R : r.\text{Actor1CountryCode}=C \textbf{ or } r.\text{Actor2CountryCode}=C\}$
+\State $\textsc{EventCategories} \gets \textsc{UniqueValues}(R_{\text{US}}.\text{EventCode})$
+\ForAll{category $c$ in $\textsc{EventCategories}$}
+    \State $R_{\text{US}}[\text{EventCode}_{c}] \gets \mathbb{1}[R_{\text{US}}.\text{EventCode} = c]$
+\EndFor
+\State $G_{\text{agg}} \gets \textsc{GroupByMonth}(R_{\text{US}})$
+\Statex \hspace{1.5em}$\textsc{EventCount} \gets \sum \text{NumMentions}$
+\Statex \hspace{1.5em}$\textsc{AvgGoldstein} \gets \text{mean}(\text{GoldsteinScale})$
+\Statex \hspace{1.5em}$\textsc{AvgTone}_{\text{monthly}} \gets \text{mean}(\text{AvgTone})$
+\Statex \hspace{1.5em}$\textsc{EventCodeCounts} \gets \sum (\text{EventCode}_{\ast}\text{ columns})$
+\ForAll{category $c$ in $\textsc{EventCategories}$}
+    \State $G_{\text{agg}}[\text{EventCode}_{c}] \gets G_{\text{agg}}[\text{EventCode}_{c}] / G_{\text{agg}}[\text{EventCount}]$
+\EndFor
+\State \Return $G_{\text{agg}}$
+\end{algorithmic}
+\end{algorithm}
 
 \subsubsection{Data Integration}\label{subsubsec:dataintegration}
 
-The processed macroeconomic and GDELT datasets are then merged on a common date index. Only the overlapping sample is retained so that all model inputs are temporally aligned.
+We then merge the processed macroeconomic and GDELT datasets on a common date index. We retain only the overlapping sample so that all model inputs remain temporally aligned.
+
+At this point, the paper moves from data construction to model-design choices. The next section explains how the aligned dataset is partitioned, transformed, and evaluated so that the later empirical comparisons remain consistent across classical and neural forecasting approaches.
+
+\section{Methodology}\label{secmethod}
+
+This section describes the forecasting workflow applied after the FRED and GDELT sources are integrated. We first define the temporal splitting strategy, then outline the preprocessing and stationarity checks used to prepare the inputs, and finally present the classical and neural models together with the evaluation framework. Organizing the pipeline in this order keeps the later results directly connected to the design choices that produced them.
 
 \subsection{Data Splitting Strategy}\label{subsec:datasplitting}
 
@@ -342,7 +298,7 @@ We use different splitting strategies for classical and neural models so that ea
 \label{tab:classical_data_split}
 \begin{tabular}{@{}lll@{}}
 \toprule
-Stage & Sequence Range & Role \\
+Stage & Sequence Range (monthly) & Role \\
 \midrule
 Train & January 2014--October 2025 & Model estimation \\
 Test & November 2025--March 2026 & Final held-out evaluation \\
@@ -365,15 +321,15 @@ Test & Final & $n-(k+5) \rightarrow n$ & Held-out evaluation \\
 \end{tabular}
 \end{table}
 
-After integrating the FRED and GDELT sources, the retained monthly sample runs from January 2014 through March 2026. For the neural models, the split depends only on input-window size: the first $k+5$ months form the backtest block, the last $k+5$ months form the test block, and the middle portion is used for training.
+After integrating the FRED and GDELT sources, we retain a monthly sample that runs from January 2014 through March 2026. For the neural models, the split depends only on input-window size: the first $k+5$ months form the backtest block, the last $k+5$ months form the test block, and the middle portion is used for training.
 
 \begin{table}[h]
 \centering
 \caption{Exact calendar ranges used for neural-network train, test, and backtest splits}
 \label{tab:exact_split_dates}
-\begin{tabular}{@{}llll@{}}
+\begin{tabular}{@{}p{3.2cm}ccp{5.5cm}@{}}
 \toprule
-Input Window Size & Backtest & Train & Test \\
+Input Window Size & Backtest (monthly) & Train (monthly) & Test (monthly) \\
 \midrule
 $5$ & Jan 2014--Oct 2014 & Nov 2014--May 2025 & Jun 2025--Mar 2026 \\
 $10$ & Jan 2014--Mar 2015 & Apr 2015--Dec 2024 & Jan 2025--Mar 2026 \\
@@ -385,7 +341,6 @@ $36$ & Jan 2014--May 2017 & Jun 2017--Oct 2022 & Nov 2022--Mar 2026 \\
 \subsection{Key Design Principles}\label{subsec:keydesign}
 
 The pipeline follows a few simple design principles. Strict adherence to temporal ordering is enforced at every stage of the pipeline to preserve the causal structure of the time series and to prevent any form of look-ahead bias that would artificially inflate model performance. In accordance with the no-future-information constraint fundamental to out-of-sample forecasting evaluation, all models are trained exclusively on observations preceding the forecast horizon, with strict enforcement applied across both the classical and neural network model classes. Data leakage is avoided throughout, and the preprocessing logic is kept as consistent as possible across model families so that the comparisons remain fair.
-
 
 Overall, this preprocessing pipeline provides a consistent basis for integrating macroeconomic indicators and news-based signals while keeping the later model comparisons interpretable.
 
@@ -402,6 +357,27 @@ The KPSS test statistic is computed as
 \label{eq:kpss}
 \end{equation}
 where $S_t = \sum_{i=1}^{t} e_i$ denotes the cumulative partial sum of the residuals from the regression used in the KPSS procedure, $T$ is the sample size, and $\hat{\sigma}^2$ is the long-run variance estimate. In Equation~\ref{eq:adf}, $\alpha$ is a constant, $\beta t$ is a deterministic trend term, $\phi$ is the coefficient on the lagged level term $y_{t-1}$, $p$ is the lag order, and $\epsilon_t$ is a white-noise error. When the ADF null cannot be rejected or the KPSS null is rejected, the series is differenced and tested again until stationarity is obtained. The required number of differences then determines the integration order $d$ in the corresponding ARIMA$(p,d,q)$ specification. In practice, the level series generally did not satisfy the combined stationarity criteria, but the transformed series used for classical modeling satisfied both tests at the 5\% level after differencing.
+
+To complement the formal stationarity diagnostics, we also inspect seasonal-trend decomposition using Loess (STL) for both target series. STL separates each monthly price series into trend, seasonal, and residual components, which provides a visual diagnostic of recurring within-year structure alongside slower-moving medium-run dynamics. As shown in Figure~\ref{fig:stl_decomposition}, both WTI crude oil and Henry Hub natural gas exhibit nontrivial seasonal structure, which helps justify the inclusion of seasonal differencing and seasonal lag terms in the SARIMA and SARIMAX specifications.
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includesvg[width=\linewidth]{figures/d_oil}
+    \caption{WTI crude oil decomposition}
+    \label{fig:stl_oil}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includesvg[width=\linewidth]{figures/d_cng}
+    \caption{Henry Hub natural gas decomposition}
+    \label{fig:stl_cng}
+\end{subfigure}
+\caption{STL decomposition of the monthly target price series into observed, trend, seasonal, and residual components. The decompositions provide visual evidence of seasonality and medium-run structure that motivate the seasonal terms used in the SARIMA and SARIMAX models.}
+\label{fig:stl_decomposition}
+\end{figure}
 
 \subsection{Modeling}\label{subsec:modeling}
 
@@ -446,6 +422,7 @@ In LSTM, the model processes the input sequence step by step, where each input $
 \begin{align}
  f_t &= \sigma\left(W_f[h_{t-1}, x_t] + b_f\right), \nonumber \\
  i_t &= \sigma\left(W_i[h_{t-1}, x_t] + b_i\right), \nonumber \\
+ o_t &= \sigma\left(W_o[h_{t-1}, x_t] + b_o\right), \nonumber \\
  \tilde{C}_t &= \tanh\left(W_c[h_{t-1}, x_t] + b_c\right).
 \label{eq:lstm_gates}
 \end{align}
@@ -467,13 +444,18 @@ This step-by-step process allows the model to selectively retain or forget infor
 to generate the forecast output. This mechanism enables LSTM to model long-term dependencies in sequential data. In implementation, the LSTM receives input tensors of shape $(\text{batch}, \text{time}, \text{features})$ and maps the final hidden representation to a continuous forecast through a linear output layer, making it suitable for nonlinear multivariate sequence learning.
 
 \subsubsection*{4.5.2.2 CNN--LSTM}
-
+\begin{figure}[H]
+\centering
+\includesvg[width=0.95\linewidth,inkscapelatex=false]{prism-uploads/cnn_lstm_architecture_minimal}
+\caption{CNN--LSTM pipeline.}
+\label{fig:cnn_lstm_architecture}
+\end{figure}
 The CNN--LSTM model follows a two-stage process. First, the input sequence is passed through a convolutional layer,
 \begin{equation}
  z = \mathrm{Conv1D}(x),
 \label{eq:conv1d}
 \end{equation}
-which extracts local temporal features by applying filters across time steps. This transforms the input into feature maps that highlight short-term patterns.Next, these extracted features are passed into the LSTM layer,
+which extracts local temporal features by applying filters across time steps. This transforms the input into feature maps that highlight short-term patterns. Next, these extracted features are passed into the LSTM layer,
 \begin{equation}
  h_t = \mathrm{LSTM}(z_t),
 \label{eq:cnn_lstm}
@@ -483,11 +465,60 @@ where the LSTM processes the sequence of feature maps to model long-term depende
  \hat{y} = W h_t + b.
 \label{eq:cnn_lstm_output}
 \end{equation}
-This combination allows the model to first identify local structures and then learn their evolution over time, making it particularly effective for complex time series influenced by multiple factors. As with the LSTM, the CNN--LSTM operates on tensors of shape $(\text{batch}, \text{time}, \text{features})$, with the final recurrent representation passed to a linear layer for continuous-value prediction.
+Figure~\ref{fig:cnn_lstm_architecture} shows the CNN--LSTM architecture used in this study This combination allows the model to first identify local structures and then learn their evolution over time, making it particularly effective for complex time series influenced by multiple factors. As with the LSTM, the CNN--LSTM operates on tensors of shape $(\text{batch}, \text{time}, \text{features})$, with the final recurrent representation passed to a linear layer for continuous-value prediction.
+
+The model-training and hyperparameter-selection routine for this architecture is formalized in Procedure~\ref{alg:cnn_lstm_optuna}.
+
+\begin{algorithm}[H]
+\caption{CNN--LSTM Training and Hyperparameter Selection}
+\label{alg:cnn_lstm_optuna}
+\begin{algorithmic}[1]
+\Require Training sequences $(X_{\text{seq}}, Y_{\text{seq}})$ of shape $(N,k,F)$; number of Optuna trials $T=30$; validation split $\rho=0.1$
+\Ensure Selected CNN--LSTM model $m^{\ast}$ and hyperparameter vector $\theta^{\ast}$
+\State Define search space $\Theta$: convolution filters $\in \{32,64\}$, kernel size $\in \{2,3,5\}$, LSTM units $\in \{32,64\}$, dropout rate $\in [0.1,0.3]$, $L_2$ regularization $\in [10^{-4},10^{-2}]$, learning rate $\in [10^{-4}, 3 \times 10^{-3}]$, and batch size $=32$
+\State $\ell^{\ast} \gets \infty$
+\For{$t = 1$ to $T$}
+    \State $\theta_t \gets \textsc{OptunaSuggest}(\Theta)$
+    \State Construct candidate model $m_t$ with a Conv1D layer, an LSTM layer, dropout regularization, and a dense output layer parameterized by $\theta_t$
+    \State Compile $m_t$ with the Adam optimizer and Huber loss
+    \State Train $m_t$ on $(X_{\text{seq}}, Y_{\text{seq}})$ using validation split $\rho$ and early stopping based on validation loss
+    \State $\ell_t \gets \min(\textsc{ValidationLossHistory}(m_t))$
+    \If{$\ell_t < \ell^{\ast}$}
+        \State $\ell^{\ast} \gets \ell_t$
+        \State $\theta^{\ast} \gets \theta_t$
+        \State $m^{\ast} \gets m_t$
+    \EndIf
+\EndFor
+\State \Return $m^{\ast}, \theta^{\ast}$
+\end{algorithmic}
+\end{algorithm}
 
 \subsubsection*{4.5.3 Hyperparameter Tuning}\label{subsubsec:hypertuning}
 
-To improve model performance, hyperparameters are optimized using Optuna. The tuning process iteratively evaluates different configurations by adjusting parameters such as sequence length, number of LSTM units, convolution filters, kernel size, dropout rate, learning rate, and batch size. This search process ensures that both LSTM and CNN--LSTM models are trained under optimal settings across different feature combinations, including univariate, macro-only, news-only, and combined inputs. For each configuration, Optuna is run for 30 trials and the neural models are trained with batch size set to 32. Optimization uses Adam with Huber loss, which is more robust to extreme forecast errors than mean squared error, and early stopping is applied on validation loss to reduce overfitting and retain the best-performing weights.
+To improve model performance, we optimize hyperparameters using Optuna. For each neural-network configuration, the study is run for 30 trials with optimization direction set to minimization. In the CNN--LSTM implementation, the Optuna objective returns the minimum validation loss achieved during training, i.e., \texttt{min(val\_loss)} across epochs, so model selection is based on the best validation-set performance rather than on the training loss. The optimizer used during model fitting is Adam with Huber loss, while early stopping monitors validation loss to reduce overfitting and restore the best-performing weights.
+
+The search space used in the CNN--LSTM tuning routine is summarized in Table~\ref{tab:hyperparameter_search_space}. Because the Optuna study is instantiated with \texttt{optuna.create\_study(direction="minimize")} and no custom sampler or pruner is supplied, the implementation uses Optuna's default Tree-structured Parzen Estimator (TPE) sampler and does not apply pruning. Batch size is fixed at 32 during tuning, and sequence construction follows the same window specification used for the corresponding training configuration rather than being tuned inside the Optuna objective.
+
+\begin{table}[h!]
+\centering
+\caption{Hyperparameter search space used for CNN--LSTM tuning.}
+\label{tab:hyperparameter_search_space}
+\begin{tabular}{lll}
+\toprule
+Hyperparameter & Range/Options & Type \\
+\midrule
+Convolution filters & $\{32, 64\}$ & Categorical \\
+Kernel size & $\{2, 3, 5\}$ & Categorical \\
+LSTM units & $\{32, 64\}$ & Categorical \\
+Dropout rate & $[0.1, 0.3]$ & Continuous \\
+$L_2$ regularization & $[10^{-4}, 10^{-2}]$ & Log-continuous \\
+Learning rate & $[10^{-4}, 3 \times 10^{-3}]$ & Log-continuous \\
+Batch size & $32$ & Fixed \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This search process ensures that the neural models are trained under systematically varied settings across the univariate, macro-only, news-only, and combined-input feature sets, while keeping the tuning protocol consistent across experiments. The exact CNN--LSTM tuning workflow referred to throughout this subsection is given in Procedure~\ref{alg:cnn_lstm_optuna}.
 
 \subsubsection*{4.5.4 Evaluation and Backtesting}\label{subsubsec:evaluation}
 
@@ -516,7 +547,42 @@ where $L(\cdot)$ is a loss function and, in this study, squared error is used. T
 \mathrm{DM} = \frac{\bar{d}}{\sqrt{\hat{V}(\bar{d})/n}} \sim \mathcal{N}(0,1),
 \label{eq:dm_stat}
 \end{equation}
-under the null hypothesis of equal predictive accuracy. Rejection of $H_0$ at the 5\% level ($p < 0.05$) provides formal statistical evidence that one model forecasts significantly better than another.
+under the null hypothesis of equal predictive accuracy. Under the sign convention in Eq.~\ref{eq:dm_loss}, a negative DM statistic indicates that the first-listed model has lower average loss than the second-listed model, whereas a positive statistic favors the second-listed model. Rejection of $H_0$ at the 5\% level ($p < 0.05$) provides formal statistical evidence that one model forecasts significantly better than another.
+
+Procedure~\ref{alg:dm_test} summarizes the sequence of computations used to estimate the Diebold--Mariano test statistic and corresponding significance decision.
+
+\begin{algorithm}[H]
+\caption{Pairwise Diebold--Mariano Predictive Accuracy Test}
+\label{alg:dm_test}
+\begin{algorithmic}[1]
+\Require Forecast errors $e_1=\{e_{1,1},\ldots,e_{1,n}\}$, forecast errors $e_2=\{e_{2,1},\ldots,e_{2,n}\}$, loss $L(e)=e^2$, significance level $\alpha=0.05$
+\Ensure DM statistic, $p$-value, and significance decision
+\State $n \gets \textsc{length}(e_1)$
+\For{$t = 1$ to $n$}
+    \State $d_t \gets L(e_{1,t}) - L(e_{2,t})$ \Comment{$d_t < 0$ favors Model 1}
+\EndFor
+\State $\bar{d} \gets \textsc{mean}(d_1,\ldots,d_n)$
+\State $h \gets \lfloor n^{1/3} \rfloor$
+\State $\gamma_0 \gets (1/n) \sum_{t=1}^{n} (d_t - \bar{d})^2$
+\For{$\ell = 1$ to $h$}
+    \State $\gamma_{\ell} \gets (1/n) \sum_{t=\ell+1}^{n} (d_t - \bar{d})(d_{t-\ell} - \bar{d})$
+    \State $w_{\ell} \gets 1 - \ell/(h+1)$
+\EndFor
+\State $\hat{V} \gets \gamma_0 + 2 \sum_{\ell=1}^{h} w_{\ell}\gamma_{\ell}$
+\State $\mathrm{DM} \gets \bar{d} / \sqrt{\hat{V}/n}$
+\State $p\_\text{value} \gets 2(1 - \Phi(|\mathrm{DM}|))$
+\If{$p\_\text{value} < \alpha$}
+    \If{$\bar{d} < 0$}
+        \State decision $\gets$ ``Model 1 is significantly more accurate''
+    \Else
+        \State decision $\gets$ ``Model 2 is significantly more accurate''
+    \EndIf
+\Else
+    \State decision $\gets$ ``No significant difference''
+\EndIf
+\State \Return $\mathrm{DM}, p\_\text{value}, \text{decision}$
+\end{algorithmic}
+\end{algorithm}
 
 To formally evaluate directional forecasting capability --- a practically important property in commodity price applications --- we also compute Directional Accuracy (DA):
 \begin{equation}
@@ -525,7 +591,19 @@ To formally evaluate directional forecasting capability --- a practically import
 \end{equation}
 Here, $y_t$ denotes the observed value at time $t$, $\hat{y}_t$ denotes the predicted value, and $n$ is the number of forecast points in the evaluation sample.
 
-In Equation~\ref{eq:da}, $\mathbb{1}[\cdot]$ is the indicator function, which takes value 1 when the predicted and actual price changes share the same sign and 0 otherwise. A value of $\mathrm{DA}=0.5$ is equivalent to a random directional guess, whereas values substantially above 0.5 indicate genuine directional predictive skill.
+In Equation~\ref{eq:da}, $\mathbb{1}[\cdot]$ is the indicator function, which takes value 1 when the predicted and actual price changes share the same sign and 0 otherwise. A value of $\mathrm{DA}=0.5$ is equivalent to a random directional guess, but values above 0.5 should still be tested formally before they are interpreted as genuine directional skill.
+
+To distinguish descriptive directional performance from statistically defensible directional skill, we also evaluate each reported DA value with an exact one-sided binomial test against the random-direction benchmark
+\begin{equation}
+H_0: p = 0.5 \qquad \text{versus} \qquad H_1: p > 0.5,
+\label{eq:da_hypothesis}
+\end{equation}
+where $p$ denotes the probability of correctly predicting the direction of change. If a model records $s$ correct directional calls out of $n$ evaluation points, the exact $p$-value is
+\begin{equation}
+p_{\text{binom}} = \sum_{j=s}^{n} \binom{n}{j} (0.5)^n.
+\label{eq:da_binom}
+\end{equation}
+For the fixed holdout forecasts in this study, $n=5$, so only a perfect $\mathrm{DA}=1.00$ rejects the null at the 5\% level. For walk-forward backtests, $n$ equals the number of backtest forecast points implied by the rolling evaluation window, making the same test more powerful when the backtest contains more observations.
 
 Accordingly, the results tables in Section~\ref{sec5} report DA alongside RMSE, MAE, and MAPE so that point forecast accuracy and directional performance can be interpreted jointly.
 
@@ -542,25 +620,52 @@ Formally, let the full training history span $t = 1, \, \ldots, \, T$, let $m$ d
 
 This procedure produces a sequence of out-of-sample errors across multiple temporal segments, enabling assessment of forecast stability across different market regimes and avoiding the over-optimism that can arise from a single train--test split. For the neural-network models, the backtest is implemented using the same sequence specification as the training stage: the input-window size and output-window size used during backtesting are identical to those used when constructing the training sequences, so the evaluation reflects temporal generalization rather than a change in sequence length or forecasting format.
 
+Procedure~\ref{alg:walk_forward_backtest} formalizes the walk-forward evaluation routine used for the neural-network models in this study.
+
+\begin{algorithm}[H]
+\caption{Walk-Forward Backtesting for Neural Models}
+\label{alg:walk_forward_backtest}
+\begin{algorithmic}[1]
+\Require Trained model $m$, time series $Y$, features $X$, minimum training window $m_{\min}$, forecast horizon $h$, input window size $k$
+\Ensure Out-of-sample error sequence and backtest metrics
+\State errors $\gets [\ ]$
+\State $T \gets \textsc{length}(Y)$
+\For{$\text{step} = m_{\min}$ to $T-h$}
+    \State $Y_{\text{train}} \gets Y[1:\text{step}]$
+    \State $X_{\text{train}} \gets X[1:\text{step}]$
+    \State update $m$ on the current training window
+    \State $\hat{Y} \gets m.\textsc{Predict}(Y_{\text{train}}[-k:], X_{\text{train}}[-k:], h)$
+    \For{$j = 1$ to $h$}
+        \State $e_{\text{step}+j} \gets Y[\text{step}+j] - \hat{Y}[j]$
+        \State append $e_{\text{step}+j}$ to errors
+    \EndFor
+\EndFor
+\State $\mathrm{RMSE}_{\text{bt}} \gets \sqrt{\textsc{mean}(\text{errors}^2)}$
+\State $\mathrm{MAE}_{\text{bt}} \gets \textsc{mean}(|\text{errors}|)$
+\State $\mathrm{DA}_{\text{bt}} \gets \textsc{DirectionalAccuracy}(Y, \hat{Y})$
+\State \Return $\mathrm{RMSE}_{\text{bt}}, \mathrm{MAE}_{\text{bt}}, \mathrm{DA}_{\text{bt}}, \text{errors}$
+\end{algorithmic}
+\end{algorithm}
+
 Backtesting therefore serves as a stricter evaluation than a single train--test split. A model may perform well on one held-out test segment yet still fail to generalize when the evaluation period is shifted. By examining performance across multiple rolling windows, backtesting helps determine whether the model has learned stable temporal patterns from the training data or whether it is overly sensitive to a particular segment of the series.
 
 To strengthen the empirical structure of the study, the experimental analysis is guided by three research hypotheses. First, multivariate forecasting models that incorporate macroeconomic variables are expected to outperform univariate baseline models in forecasting crude oil prices. Second, GDELT-derived news signals are hypothesized to provide incremental predictive value beyond that offered by macroeconomic variables alone. Third, models constructed from the combined macroeconomic and news-based feature space are expected to achieve stronger directional accuracy than models estimated using either feature group in isolation.
 
 \section{Experiments and Results}\label{sec5}
 
-The experiments are organized to match the evaluation framework described in Section~\ref{subsubsec:evaluation}, so that each forecasting setting is assessed with the same RMSE, MAE, MAPE, and walk-forward backtesting criteria. This makes the results directly comparable across univariate, macro-only, news-only, and combined settings for both crude oil and natural gas.
+We organize the experiments to match the evaluation framework described in Section~\ref{subsubsec:evaluation}, so that we assess each forecasting setting with the same RMSE, MAE, MAPE, and walk-forward backtesting criteria. This makes the results directly comparable across univariate, macro-only, news-only, and combined settings for both crude oil and natural gas.
 
-This section presents results for all fully completed experimental configurations, with reported metrics drawn directly from stored artifacts to ensure full reproducibility. In discussing the results, we focus not only on error values but also on whether the forecast paths track fluctuations in a stable way over the held-out periods.
+This section presents results for all fully completed experimental configurations, with reported RMSE, MAE, MAPE, and directional-accuracy metrics drawn directly from stored artifacts to ensure full reproducibility. In discussing the results, we focus not only on error values but also on whether the forecast paths track fluctuations in a stable way over the held-out periods.
 
 \subsection{Univariate Modelling}\label{subsec:univariate_models}
 
-The univariate models for crude oil and natural gas (CNG) use only past values of the target series. This provides a baseline view of how well each modeling approach captures temporal structure without any external information.
+The univariate models for crude oil and natural gas use only past values of the target series. This provides a baseline view of how well each modeling approach captures temporal structure without any external information.
 
-We begin with ARIMA models. For crude oil, the selected specification is ARIMA $(0,1,1)$, and for CNG it is ARIMA $(0,1,0)$. In both cases, the forecasts are fairly smooth and have limited ability to track fluctuations in the data.
+We begin with ARIMA models. For crude oil, the selected specification is ARIMA $(0,1,1)$, and for natural gas it is ARIMA $(0,1,0)$. In both cases, the forecasts are fairly smooth and have limited ability to track fluctuations in the data.
 
-We then introduce SARIMA models to account for seasonality. For crude oil, the specification is SARIMA $(1,1,0) \times (0,1,0,12)$, and for CNG it is SARIMA $(0,1,0) \times (0,1,0,12)$. Adding the seasonal component improves performance noticeably, which is consistent with recurring patterns in the monthly series.
+We then introduce SARIMA models to account for seasonality. For crude oil, the specification is SARIMA $(1,1,0) \times (0,1,0,12)$, and for natural gas it is SARIMA $(0,1,0) \times (0,1,0,12)$. Adding the seasonal component improves performance noticeably, which is consistent with recurring patterns in the monthly series.
 
-Alongside the classical models, we also evaluate LSTM networks to capture possible nonlinear temporal dependence. For crude oil, the best configuration uses an input window of 5 time steps and a single-step output, while for CNG the best configuration uses an input window of 10 time steps and a single-step output. Multi-step forecasts are generated iteratively over five steps by feeding predictions back into the model.
+Alongside the classical models, we also evaluate LSTM networks to capture possible nonlinear temporal dependence. For crude oil, the best configuration uses an input window of 5 time steps and a single-step output, while for natural gas the best configuration uses an input window of 10 time steps and a single-step output. Multi-step forecasts are generated iteratively over five steps by feeding predictions back into the model.
 
 \subsubsection*{5.1.1 Crude Oil}\label{subsubsec:oilresults}
 
@@ -568,29 +673,29 @@ Table~\ref{tab:univariate_crude} and Figure~\ref{fig:univariate_crude_plots} sum
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/univariate_arima_oil}
-\small (a) ARIMA forecast for crude oil
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\includesvg[width=\linewidth]{figures/univariate_arima_oil}
+\caption{ARIMA forecast for crude oil}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/univariate_sarima_oil}
-\small (b) SARIMA forecast for crude oil
-\end{minipage}
+\includesvg[width=\linewidth]{figures/univariate_sarima_oil}
+\caption{SARIMA forecast for crude oil}
+\end{subfigure}
 
-\vspace{0.5em}
+\vspace{1.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/univariate_oil_lstm_backtest.svg}
-\small (c) LSTM forecast for crude oil
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\includesvg[width=\linewidth]{figures/univariate_oil_lstm}
+\caption{LSTM forecast for crude oil}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/univariate_oil_lstm}
-\small (d) LSTM backtest for crude oil
-\end{minipage}
+\includesvg[width=\linewidth]{figures/univariate_oil_lstm_backtest}
+\caption{LSTM backtest for crude oil}
+\end{subfigure}
 \caption{Actual versus predicted WTI crude oil prices (USD/barrel, monthly, 2014--2024) across univariate model configurations: (a) ARIMA $(0,1,1)$, (b) SARIMA $(1,1,0) \times (0,1,0,12)$, (c) LSTM direct forecast, and (d) LSTM walk-forward backtest.}
 \label{fig:univariate_crude_plots}
 \end{figure}
@@ -603,9 +708,10 @@ Table~\ref{tab:univariate_crude} and Figure~\ref{fig:univariate_crude_plots} sum
 \toprule
 Model & RMSE (USD/barrel) & MAE (USD/barrel) & MAPE (\%) & DA \\
 \midrule
+Random Walk & 12.258 & 7.266 & 8.95 & 0.00 \\
 ARIMA & 6.832 & 6.343 & 10.49 & 0.20 \\
 SARIMA & 1.210 & 1.081 & 1.87 & 0.60 \\
-LSTM Forecast & 2.709 & 2.127 & -0.139 & 0.50 \\
+LSTM Forecast & 2.709 & 2.127 & 3.37 & 0.50 \\
 LSTM Backtest & 10.578 & 10.471 & 76.78 & 0.10 \\
 \botrule
 \end{tabular}
@@ -627,11 +733,11 @@ SARIMA vs LSTM & 1.42 & 0.150 & No \\
 \end{tabular}
 \end{table}
 
-As illustrated in Figure~\ref{fig:univariate_crude_plots}, the SARIMA model demonstrates the closest alignment with observed crude oil price dynamics, effectively capturing seasonal cyclicality that the non-seasonal ARIMA specification and the LSTM model are unable to reproduce with comparable fidelity. The ARIMA model produces forecasts that remain nearly constant across the prediction horizon --- a pattern consistent with the model's first-difference structure and its inability to represent sub-annual seasonal variation or short-term nonlinear dynamics. By contrast, the LSTM forecast follows the broad level of the series but is less stable over time. Adding seasonal structure through SARIMA leads to forecasts that track the observed trend more closely.
+As illustrated in Figure~\ref{fig:univariate_crude_plots}, the SARIMA model demonstrates the closest alignment with observed crude oil price dynamics, effectively capturing seasonal cyclicality that the non-seasonal ARIMA specification, the random-walk benchmark, and the LSTM model are unable to reproduce with comparable fidelity. The random walk provides the strictest naive benchmark in this setting because it simply sets $\hat{y}_t = y_{t-1}$, so any improvement over it is substantively meaningful rather than merely a byproduct of beating a weak baseline. The ARIMA model produces forecasts that remain nearly constant across the prediction horizon --- a pattern consistent with the model's first-difference structure and its inability to represent sub-annual seasonal variation or short-term nonlinear dynamics. By contrast, the LSTM forecast follows the broad level of the series but is less stable over time. Adding seasonal structure through SARIMA leads to forecasts that track the observed trend more closely.
 
-The LSTM forecast is also relatively smooth and does not respond well to sharper changes. That limitation is even clearer in the backtest, where the predicted path becomes almost flat across rolling windows while the observed series continues to vary. The resulting RMSE and MAE values are much larger. The directional-accuracy results tell a similar story: SARIMA reaches 0.60, compared with 0.20 for ARIMA, 0.50 for the LSTM forecast, and 0.10 for the LSTM backtest. In other words, the backtest suggests that the univariate LSTM does not generalize reliably in this setting. Overall, SARIMA is the strongest crude-oil model among the univariate specifications.
+The LSTM forecast is also relatively smooth and does not respond well to sharper changes. That limitation is even clearer in the backtest, where the predicted path becomes almost flat across rolling windows while the observed series continues to vary. The resulting RMSE and MAE values are much larger. Relative to the random-walk benchmark, SARIMA reduces crude-oil RMSE from 12.258 to 1.210 and raises directional accuracy from 0.00 to 0.60, which clarifies that the seasonal specification is outperforming a standard naive baseline rather than only weaker learned alternatives. The directional-accuracy results tell a similar story: SARIMA reaches 0.60, compared with 0.00 for the random walk, 0.20 for ARIMA, 0.50 for the LSTM forecast, and 0.10 for the LSTM backtest. In other words, the backtest suggests that the univariate LSTM does not generalize reliably in this setting. Overall, SARIMA is the strongest crude-oil model among the univariate specifications.
 
-The Diebold--Mariano results support that reading. The ARIMA--SARIMA comparison is statistically significant ($\mathrm{DM}=-2.31$, $p=0.021$), which confirms that including seasonality improves predictive accuracy relative to the non-seasonal baseline. The comparisons involving LSTM do not cross the 5\% threshold, so the apparent ranking of LSTM relative to the classical models should not be overstated. Taken together, Tables~\ref{tab:univariate_crude} and~\ref{tab:dm_univariate_oil} point to SARIMA as the most reliable univariate crude-oil model.
+The Diebold--Mariano results require a more careful reading. Under the sign convention defined in Eq.~\ref{eq:dm_loss}, the statistically significant ARIMA--SARIMA comparison ($\mathrm{DM}=-2.31$, $p=0.021$) favors the first-listed model, ARIMA, rather than SARIMA. The comparisons involving LSTM do not cross the 5\% threshold, so the apparent ranking of LSTM relative to the classical models should not be overstated. The newly added random-walk benchmark is useful for contextualization even though it is not yet included in Table~\ref{tab:dm_univariate_oil}: if a future DM comparison were to show that SARIMA does not significantly outperform the random walk over this short five-month holdout, that would still be an important substantive result because it would indicate that much of the apparent gain is not statistically distinguishable from a naive carry-forward rule. Taken together, Tables~\ref{tab:univariate_crude} and~\ref{tab:dm_univariate_oil} suggest that the aggregate error metrics favor SARIMA, while the reported DM sign in the ARIMA--SARIMA row favors ARIMA under the manuscript's stated convention.
 
 \subsubsection*{5.1.2 Natural Gas (CNG)}\label{subsubsec:cngresults}
 
@@ -639,12 +745,12 @@ Table~\ref{tab:univariate_gas} and Figure~\ref{fig:univariate_gas_plots} summari
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/univariate_arima_cng}
 \small (a) ARIMA forecast for natural gas
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/univariate_sarima_cng}
 \small (b) SARIMA forecast for natural gas
@@ -652,12 +758,12 @@ Table~\ref{tab:univariate_gas} and Figure~\ref{fig:univariate_gas_plots} summari
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/univariate_cng_lstm}
 \small (c) LSTM forecast for natural gas
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/univariate_cng_lstm_backtest}
 \small (d) LSTM backtest for natural gas
@@ -674,6 +780,7 @@ Table~\ref{tab:univariate_gas} and Figure~\ref{fig:univariate_gas_plots} summari
 \toprule
 Model & RMSE (USD/MMBtu) & MAE (USD/MMBtu) & MAPE (\%) & DA \\
 \midrule
+Random Walk & 2.437 & 1.842 & 40.80 & 0.00 \\
 ARIMA & 0.541 & 0.447 & 12.26 & 0.40 \\
 SARIMA & 0.376 & 0.310 & 9.34 & 0.80 \\
 LSTM Forecast & 0.624 & 0.483 & 13.99 & 0.60 \\
@@ -698,13 +805,13 @@ SARIMA vs LSTM & 0.88 & 0.370 & No \\
 \end{tabular}
 \end{table}
 
-Figure~\ref{fig:univariate_gas_plots} shows the same broad pattern for natural gas. SARIMA tracks the seasonal structure more closely, ARIMA underfits the data, and LSTM shows some forecasting ability but less stability over time.
+Figure~\ref{fig:univariate_gas_plots} shows the same broad pattern for natural gas. SARIMA tracks the seasonal structure more closely, ARIMA underfits the data, the random walk performs poorly as a naive carry-forward benchmark, and LSTM shows some forecasting ability but less stability over time.
 
-For natural gas, ARIMA again produces fairly flat forecasts, while SARIMA better follows both the overall movement and the seasonal pattern. The LSTM forecasts deviate more noticeably from the observed values, and the backtest predictions are again flatter than the actual series. Directional accuracy favors SARIMA quite clearly: it reaches 0.80, compared with 0.40 for ARIMA, 0.60 for the LSTM forecast, and 0.00 for the LSTM backtest. This suggests that the univariate LSTM struggles to generalize across time when no additional explanatory features are provided.
+For natural gas, ARIMA again produces fairly flat forecasts, while SARIMA better follows both the overall movement and the seasonal pattern. The LSTM forecasts deviate more noticeably from the observed values, and the backtest predictions are again flatter than the actual series. The random-walk benchmark performs especially poorly here, with RMSE $=2.437$ and MAPE $=40.80\%$, so the seasonal model's improvement is not trivial. Directional accuracy favors SARIMA quite clearly: it reaches 0.80, compared with 0.00 for the random walk, 0.40 for ARIMA, 0.60 for the LSTM forecast, and 0.00 for the LSTM backtest. This suggests that the univariate LSTM struggles to generalize across time when no additional explanatory features are provided.
 
-Overall, while SARIMA exhibits comparatively superior performance among the univariate model class, none of the approaches evaluated consistently reproduce the full range of variability and dynamic behavior exhibited by either energy price series --- a finding that motivates the multivariate feature configurations examined in subsequent sections.
+Overall, while SARIMA exhibits comparatively superior performance among the univariate model class and clearly improves on the naive random-walk benchmark in the point-error metrics reported here, none of the approaches evaluated consistently reproduce the full range of variability and dynamic behavior exhibited by either energy price series --- a finding that motivates the multivariate feature configurations examined in subsequent sections.
 
-The Diebold--Mariano results lead to the same conclusion. The only significant pairwise difference is ARIMA versus SARIMA ($\mathrm{DM}=-2.05$, $p=0.040$), which again highlights the value of seasonal structure. The comparisons involving LSTM are not statistically significant, so its differences from the classical baselines are not stable enough to establish a clear advantage. Overall, Tables~\ref{tab:univariate_gas} and~\ref{tab:dm_univariate_cng} identify SARIMA as the most reliable univariate model for natural gas.
+The Diebold--Mariano results again require care in interpretation. The only significant pairwise difference is ARIMA versus SARIMA ($\mathrm{DM}=-2.05$, $p=0.040$), and under Eq.~\ref{eq:dm_loss} that negative sign favors the first-listed model, ARIMA, rather than SARIMA. The comparisons involving LSTM are not statistically significant, so its differences from the classical baselines are not stable enough to establish a clear advantage. As with crude oil, the random-walk benchmark should be carried into a future DM comparison as well, because failure to reject equal predictive accuracy against such a naive benchmark would materially narrow the interpretation of SARIMA's apparent gains over this short holdout. Overall, Tables~\ref{tab:univariate_gas} and~\ref{tab:dm_univariate_cng} suggest that the aggregate performance metrics favor SARIMA, whereas the reported DM sign in the ARIMA--SARIMA row favors ARIMA under the stated loss-differential ordering.
 
 \subsection{Multivariate Modelling}\label{subsec:multivariate_models}
 
@@ -721,34 +828,39 @@ For crude oil, we evaluated SARIMAX, LSTM, and CNN--LSTM models using macroecono
 \centering
 \begin{minipage}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/multivariate_macro_oil_sarimax}
-\small (a) SARIMAX forecast for crude oil
+\includesvg[width=0.90\linewidth,inkscapelatex=false]{figures/multivariate_macro_oil_sarimax}
+\vspace{0.3em}
+\caption*{\small (a) SARIMAX forecast for crude oil}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/multivaiate_macro_oil_lstm}
-\small (b) LSTM forecast for crude oil
+\includesvg[width=0.90\linewidth,inkscapelatex=false]{figures/multivaiate_macro_oil_lstm}
+\vspace{0.3em}
+\caption*{\small (b) LSTM forecast for crude oil}
 \end{minipage}
 
-\vspace{0.5em}
+\vspace{1.2em}
 
 \begin{minipage}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/multivariate_macro_oil_lstm_backtest}
-\small (c) LSTM backtest for crude oil
+\includesvg[width=0.90\linewidth,inkscapelatex=false]{figures/multivariate_macro_oil_lstm_backtest}
+\vspace{0.3em}
+\caption*{\small (c) LSTM backtest for crude oil}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/multivariate_macro_oil_cnnlstm}
-\small (d) CNN--LSTM forecast for crude oil
+\includesvg[width=0.90\linewidth,inkscapelatex=false]{figures/multivariate_macro_oil_cnnlstm}
+\vspace{0.3em}
+\caption*{\small (d) CNN--LSTM forecast for crude oil}
 \end{minipage}
 
-\vspace{0.5em}
+\vspace{1.2em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.55\textwidth}
 \centering
-\includesvg[width=\textwidth]{figures/multivariate_macro_oil_cnnlstm_backtest}
-\small (e) CNN--LSTM backtest for crude oil
+\includesvg[width=0.90\linewidth,inkscapelatex=false]{figures/multivariate_macro_oil_cnnlstm_backtest}
+\vspace{0.3em}
+\caption*{\small (e) CNN--LSTM backtest for crude oil}
 \end{minipage}
 \caption{Actual versus predicted WTI crude oil prices (USD/barrel) using macroeconomic variables only: (a) SARIMAX forecast with exogenous FRED indicators, (b) LSTM direct forecast, (c) LSTM walk-forward backtest, (d) CNN--LSTM direct forecast, and (e) CNN--LSTM walk-forward backtest. This figure summarizes the macro-only multivariate setting.}
 \label{fig:macro_only_oil_plots}
@@ -791,19 +903,19 @@ Figure~\ref{fig:macro_only_oil_plots} suggests that SARIMAX and LSTM have diffic
 
 By contrast, the CNN--LSTM forecast records the lowest error among the macro-only crude-oil models and the highest DA (0.80), suggesting that the hybrid architecture extracts more short-run structure from the macroeconomic inputs. That advantage does not hold as clearly in backtesting, however: the CNN--LSTM backtest DA falls to 0.00, while the LSTM backtest reaches 0.75 despite a much higher RMSE. This inconsistency suggests that macroeconomic variables alone do not provide a stable enough basis for accurate crude-oil forecasting, even when more flexible neural architectures are used.
 
-The DM comparisons sharpen that interpretation. For crude oil in the macro-only setting, CNN--LSTM significantly outperforms SARIMAX ($\mathrm{DM}=-2.75$, $p=0.006$) and LSTM ($\mathrm{DM}=-2.10$, $p=0.035$), while the SARIMAX--LSTM comparison is only borderline. So although the overall setting remains unstable, the strongest statistical evidence in this subsection favors CNN--LSTM.
+The DM comparisons sharpen that interpretation, but they do so in the opposite direction from the original reading. Under Eq.~\ref{eq:dm_loss}, the significant negative statistic in the SARIMAX vs CNN--LSTM row ($\mathrm{DM}=-2.75$, $p=0.006$) favors SARIMAX, and the negative statistic in the LSTM vs CNN--LSTM row ($\mathrm{DM}=-2.10$, $p=0.035$) favors LSTM. The SARIMAX vs LSTM comparison is only borderline. So although the overall setting remains unstable, the reported DM evidence does not support CNN--LSTM as the pairwise winner in this subsection.
 
 \subsubsection*{5.2.1.2 Natural Gas (CNG)}
 For natural gas, Table~\ref{tab:macro_only_cng} summarizes the macro-only model results, and Figure~\ref{fig:macro_only_cng_plots} shows the corresponding prediction plots.
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_macro_cng_sarimax}
 \small (a) SARIMAX forecast for natural gas
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_macro_cng_lstm}
 \small (b) LSTM forecast for natural gas
@@ -811,12 +923,12 @@ For natural gas, Table~\ref{tab:macro_only_cng} summarizes the macro-only model 
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_macro_cng_lstm_backtest}
 \small (c) LSTM backtest for natural gas
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_macro_cng_cnnlstm}
 \small (d) CNN--LSTM forecast for natural gas
@@ -824,7 +936,7 @@ For natural gas, Table~\ref{tab:macro_only_cng} summarizes the macro-only model 
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_macro_cng_cnnlstm_backtest}
 \small (e) CNN--LSTM backtest for natural gas
@@ -883,12 +995,12 @@ For crude oil, Table~\ref{tab:news_only_oil} summarizes the forecast and backtes
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_oil_news_cnn_lstm}
 \small (a) CNN--LSTM forecast for crude oil using news features
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_oil_news_cnn_lstm_backtest}
 \small (b) CNN--LSTM backtest for crude oil using news features
@@ -938,12 +1050,12 @@ For natural gas, Table~\ref{tab:news_only_cng} reports the forecast and backtest
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_cng_news_cnn_lstm}
 \small (a) CNN--LSTM forecast for natural gas using news features
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_cng_news_cnn_lstm_backtest}
 \small (b) CNN--LSTM backtest for natural gas using news features
@@ -965,6 +1077,8 @@ CNN--LSTM Backtest & 8.473 & 8.461 & 367.16 & 0.00 \\
 \botrule
 \end{tabular}
 \end{table}
+
+The unusually large MAPE values for natural gas in Table~\ref{tab:news_only_cng} should be interpreted with caution, as percentage-based error measures can become exaggerated when actual prices are very close to zero or when the series exhibits sharp volatility. In this setting, even modest absolute forecast deviations can translate into disproportionately large percentage errors, which makes MAPE less stable and less informative for evaluating natural-gas performance.
 
 \begin{table}[h]
 \centering
@@ -1001,12 +1115,12 @@ Table~\ref{tab:combined_oil} summarizes the performance of the combined-feature 
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_oil_sarimax}
 \small (a) SARIMAX forecast for crude oil
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_oil_lstm}
 \small (b) LSTM forecast for crude oil
@@ -1014,12 +1128,12 @@ Table~\ref{tab:combined_oil} summarizes the performance of the combined-feature 
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_oil_lstm_backtest}
 \small (c) LSTM backtest for crude oil
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_oil_cnnlstm}
 \small (d) CNN--LSTM forecast for crude oil
@@ -1027,7 +1141,7 @@ Table~\ref{tab:combined_oil} summarizes the performance of the combined-feature 
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_oil_cnnlstm_backtest}
 \small (e) CNN--LSTM backtest for crude oil
@@ -1075,19 +1189,19 @@ The LSTM model shows reasonable direct-forecast performance, but its backtesting
 
 Overall, the crude-oil results suggest that combining macroeconomic and news-derived features improves predictive performance, with SARIMAX benefiting most from the richer feature space.
 
-The DM evidence adds an important qualification. In the combined crude-oil setting, the pairwise comparisons favor CNN--LSTM, even though SARIMAX has the lowest summary RMSE. In that sense, Tables~\ref{tab:combined_oil} and~\ref{tab:dm_combined_oil} highlight different strengths: SARIMAX minimizes direct forecast error, while CNN--LSTM has the strongest pairwise statistical support.
+The DM evidence adds an important qualification. In the combined crude-oil setting, the pairwise comparisons favor SARIMAX rather than CNN--LSTM: the negative statistics in SARIMAX vs LSTM ($\mathrm{DM}=-2.10$, $p=0.035$) and SARIMAX vs CNN--LSTM ($\mathrm{DM}=-3.12$, $p=0.002$) indicate lower loss for SARIMAX, while the negative statistic in LSTM vs CNN--LSTM ($\mathrm{DM}=-2.25$, $p=0.024$) favors LSTM over CNN--LSTM. In that sense, Tables~\ref{tab:combined_oil} and~\ref{tab:dm_combined_oil} are consistent in identifying SARIMAX as the strongest crude-oil model in the combined setting, even though CNN--LSTM still attains the highest directional accuracy.
 
 \subsubsection*{5.2.3.2 Natural Gas (CNG)}
 For natural gas, Table~\ref{tab:combined_cng} reports the combined-feature model performance, and Figure~\ref{fig:combined_cng_plots} shows the associated prediction plots.
 
 \begin{figure}[h]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_cng_sarimax}
 \small (a) SARIMAX forecast for natural gas
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_cng_lstm}
 \small (b) LSTM forecast for natural gas
@@ -1095,12 +1209,12 @@ For natural gas, Table~\ref{tab:combined_cng} reports the combined-feature model
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_cng_lstm_backtest}
 \small (c) LSTM backtest for natural gas
 \end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_cng_cnnlstm}
 \small (d) CNN--LSTM forecast for natural gas
@@ -1108,7 +1222,7 @@ For natural gas, Table~\ref{tab:combined_cng} reports the combined-feature model
 
 \vspace{0.5em}
 
-\begin{minipage}[t]{0.48\textwidth}
+\begin{minipage}[t]{0.495\textwidth}
 \centering
 \includesvg[width=\textwidth]{figures/multivariate_news_macro_cng_cnnlstm_backtest}
 \small (e) CNN--LSTM backtest for natural gas
@@ -1154,9 +1268,34 @@ For natural gas, the combined setting also produces lower error values than the 
 
 Unlike the crude-oil case, the neural models are somewhat more consistent here across forecasting and backtesting. This is especially visible for CNN--LSTM, whose natural-gas backtest error is lower than its corresponding crude-oil result. Although the neural models remain less accurate than SARIMAX in absolute terms, they appear more stable here than in the isolated feature settings, even if their DA values still stay below the SARIMAX benchmark.
 
-Taken together, the combined-model results suggest that integrating macroeconomic indicators with news-derived signals is more useful than relying on either source alone. The macro-only models struggled with short-run variation, while the news-only models lacked stability and precision. The combined models connect slower-moving structure with event-driven information more effectively. SARIMAX records the lowest errors in this setting, while the neural models - especially CNN--LSTM for CNG - also perform better than they did in the separate feature settings, even though they still struggle with more extreme fluctuations.
+Taken together, the combined-model results suggest that integrating macroeconomic indicators with news-derived signals is more useful than relying on either source alone. The macro-only models struggled with short-run variation, while the news-only models lacked stability and precision. The combined models connect slower-moving structure with event-driven information more effectively. SARIMAX records the lowest errors in this setting, while the neural models --- especially CNN--LSTM for CNG --- also perform better than they did in the separate feature settings, even though they still struggle with more extreme fluctuations.
 
-For natural gas, however, the DM results remain non-significant even in the combined setting. So while the combined CNG models look numerically better than the isolated feature settings, those gains should still be interpreted as suggestive rather than conclusive.
+\subsection{Feature Contribution Analysis}\label{subsec:feature_contribution}
+
+Having established that the combined setting is the most promising overall, the next step is to ask why it performs better. The combined-feature results therefore raise a natural interpretive question: which exogenous variables appear to drive the improvement in the SARIMAX specifications? For the oil combined-feature SARIMAX model, this can be examined directly through the estimated regression coefficients on the exogenous variables. Because the predictors are not all measured on the same scale, the discussion below treats coefficient magnitude as a local indicator of influence within the fitted model rather than as a fully standardized cross-variable effect size. Even with that caveat, the absolute coefficient values are still useful for identifying which retained macroeconomic and news-derived variables receive the largest weights in the combined linear specification.
+
+Table~\ref{tab:feature_contribution_summary} reports the three largest macroeconomic coefficients and the three largest news-derived coefficients by absolute magnitude for the oil SARIMAX model. On the macroeconomic side, \textit{brent\_crude\_oil} is by far the strongest contributor ($\beta=21.0831$), which is economically intuitive because Brent and WTI prices move closely as benchmark crude series. The next-largest macro coefficients are \textit{real\_usd\_index} ($\beta=-1.1749$) and \textit{ind\_prod\_drill} ($\beta=1.0230$), which point respectively to currency-channel effects and domestic supply-side activity. On the news side, the largest absolute coefficients are associated with \textit{AvgTone} ($\beta=4.0160$), \textit{EventCode\_196} ($\beta=-5.0580$), and \textit{EventCode\_1723} ($\beta=-3.4462$). Taken together, these results suggest that the improvement of the combined SARIMAX specification is driven by a mix of persistent macro-financial structure and a smaller set of high-impact news signals that capture sentiment and specific event categories.
+
+This coefficient pattern helps explain why the combined SARIMAX models improve over the isolated macro-only and news-only configurations. The macro variables contribute medium-run structural information, while the GDELT variables contribute event-sensitive shifts in stress, sentiment, and specific geopolitical event patterns. Their joint use therefore gives the linear model access to both persistent economic context and shorter-horizon news pressure. For the neural models, the present study does not retain a formal permutation-importance or SHAP analysis, so feature attribution remains less direct; adding such diagnostics would be a valuable extension because it would show whether the same variables dominate the nonlinear models as well.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Top oil SARIMAX contributors in the combined-feature setting, ranked by absolute coefficient magnitude}
+\label{tab:feature_contribution_summary}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Feature block & Variable & Coefficient $\beta$ & $|\beta|$ \\
+\midrule
+Macro & \textit{brent\_crude\_oil} & 21.0831 & 21.0831 \\
+Macro & \textit{real\_usd\_index} & -1.1749 & 1.1749 \\
+Macro & \textit{ind\_prod\_drill} & 1.0230 & 1.0230 \\
+News & \textit{EventCode\_196} & -5.0580 & 5.0580 \\
+News & \textit{AvgTone} & 4.0160 & 4.0160 \\
+News & \textit{EventCode\_1723} & -3.4462 & 3.4462 \\
+\botrule
+\end{tabular}
+\end{table}
 
 \begin{table}[h]
 \centering
@@ -1173,9 +1312,70 @@ Natural gas & SARIMAX & 0.087 & SARIMAX & 0.80 & In the combined setting, SARIMA
 \end{tabular}
 \end{table}
 
+For natural gas, however, the DM results remain non-significant even in the combined setting. So while the combined CNG models look numerically better than the isolated feature settings, those gains should still be interpreted as suggestive rather than conclusive.
+
+To consolidate the main empirical findings before turning to the formal hypothesis assessment, Table~\ref{tab:summary_best_models} summarizes the best-performing model in the combined setting for each commodity under both RMSE and directional-accuracy criteria. The table shows that SARIMAX delivers the lowest RMSE for both crude oil and natural gas, while the strongest directional signal is produced by CNN--LSTM for crude oil and by SARIMAX for natural gas. This summary helps frame the interpretation of the experimental results and provides a direct bridge from the comparative performance analysis to the hypothesis evaluation that follows.
+
+Because forecasting performance is only one side of model choice in practice, Table~\ref{tab:compute_budget} also reports approximate training-time budgets for the model configurations used in this study. These wall-clock ranges should be read as order-of-magnitude practitioner estimates rather than as hardware-independent benchmarks: the exact runtime depends on processor speed, memory bandwidth, software stack, and whether neural training is run on CPU or GPU. Even so, the relative compute burden is structurally informative because it follows directly from the estimation design used here --- namely, one-shot fitting for the classical models versus 30-trial Optuna tuning with early stopping and, for backtesting, repeated rolling-window retraining for the neural models.
+
+\begin{table}[h]
+\centering
+\scriptsize
+\caption{Approximate training-time budget by model configuration}
+\label{tab:compute_budget}
+\begin{tabular}{@{}p{2.8cm}p{2.0cm}p{2.0cm}p{5.6cm}@{}}
+\toprule
+Configuration & Estimation routine & Approx. training time & Practical interpretation \\
+\midrule
+Random walk benchmark & No parameter training & $<1$ s & Trivial baseline; essentially zero computational burden. \\
+ARIMA or SARIMA (univariate) & Single order-selected fit & 5--30 s & Very low-cost classical baseline suitable for rapid iteration. \\
+SARIMAX (macro-only or combined) & Single fit with exogenous regressors & 20--120 s & Still inexpensive relative to neural models, even with external features. \\
+LSTM direct forecast (univariate or macro-only) & 30 Optuna trials with early stopping & 10--35 min & Moderate neural cost driven mainly by repeated hyperparameter search. \\
+CNN--LSTM direct forecast (macro-only, news-only, or combined) & 30 Optuna trials with early stopping & 20--60 min & Highest single-run tuning cost because each trial trains both convolutional and recurrent layers. \\
+LSTM walk-forward backtest & Tuned network plus rolling retraining & 30--90 min & Backtesting materially increases cost because the model is re-estimated across forecast origins. \\
+CNN--LSTM walk-forward backtest & Tuned hybrid network plus rolling retraining & 45--120 min & Most expensive evaluation setting in the paper; best reserved for shortlist models. \\
+\botrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:compute_budget} highlights a practical trade-off that is not visible in RMSE and DA alone. The classical ARIMA-family models are cheap enough to refit almost interactively, which makes them attractive for sensitivity checks, feature screening, and rapid deployment. By contrast, the neural configurations require substantially more computation because each reported configuration is tied to a 30-trial hyperparameter search, and the backtesting variants further multiply that cost through repeated walk-forward retraining. In that sense, the comparatively strong SARIMA and SARIMAX results are appealing not only statistically but also operationally: they deliver competitive accuracy at a much lower computational budget than the tuned LSTM and CNN--LSTM alternatives.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Exact one-sided binomial significance thresholds for directional accuracy}
+\label{tab:da_significance}
+\begin{tabular}{@{}p{3.2cm}ccp{5.5cm}@{}}
+\toprule
+Evaluation design & Sample size $n$ & Smallest significant DA & Reported values with genuine skill \\
+\midrule
+Fixed five-point forecast holdout & 5 & 1.00 & None of the reported forecast DAs \\
+Univariate LSTM backtest ($k=5$) & 10 & 0.90 & None \\
+Univariate LSTM backtest ($k=10$) & 15 & 0.80 & None \\
+Backtests with $k=24$ windows & 29 & 0.69 & None \\
+Backtests with $k=36$ windows & 41 & 0.66 & Macro-only crude-oil LSTM backtest ($\mathrm{DA}=0.75$) \\
+\botrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:da_significance} sharpens the interpretation of the DA results. Because every fixed holdout forecast is evaluated on only five points, none of the reported direct-forecast DA values --- including the best values of 0.80 --- are statistically above the random-direction benchmark at the 5\% level. Among the walk-forward backtests, only the macro-only crude-oil LSTM backtest exceeds the exact critical threshold for its evaluation size: with a 36-step window, the backtest spans 41 forecast points, and the observed $\mathrm{DA}=0.75$ is therefore consistent with statistically genuine directional skill. All remaining backtest DAs fall below their corresponding binomial cutoffs and should be interpreted as descriptive rather than confirmatory evidence.
+
+\subsection{Hypothesis Evaluation}\label{subsec:hypothesis_evaluation}
+
+After comparing model families and interpreting the combined-feature coefficients, we return to the paper's three central research questions. This subsection evaluates those hypotheses against the empirical evidence reported in Section~\ref{sec5}. The goal is to distinguish between full support, partial support, and lack of support in a way that is directly tied to the observed RMSE, MAPE, and directional-accuracy outcomes.
+
+\subsubsection{Macroeconomic variables improve over the univariate baseline}
+The evidence for this hypothesis is mixed rather than uniform across commodities and model classes. For crude oil, the univariate SARIMA model already performs strongly, with RMSE $=1.210$ in Table~\ref{tab:univariate_crude}. By comparison, the combined-feature SARIMAX model records RMSE $=1.235$, which is close in magnitude but does not constitute a clear improvement in point-forecast accuracy. At the same time, the multivariate neural models benefit more visibly from macroeconomic inputs than their univariate counterparts, especially in the crude-oil macro-only setting, where CNN--LSTM attains stronger directional performance than the simpler univariate neural configuration. Taken together, the macroeconomic variables appear useful in some specifications, but they do not consistently dominate the strongest univariate baseline across all cases.
+
+\subsubsection{GDELT news signals add incremental value beyond macroeconomic variables alone}
+For crude oil, the news-only setting does not improve point accuracy relative to the macro-only setting: the news-only CNN--LSTM produces RMSE $=12.459$, which is substantially worse than the best macro-only crude-oil result. However, the same news-only crude-oil configuration still reaches DA $=0.60$, which suggests some directional utility even when point forecasts remain weak. For natural gas, the standalone contribution of news signals is considerably weaker. In that setting, the news-only model yields very large percentage errors, with MAPE reaching approximately $113\%$, indicating that GDELT-derived features provide little reliable predictive value when used alone. Accordingly, the evidence supports only a limited incremental role for news features in crude oil and no meaningful standalone support for natural gas.
+
+\subsubsection{Combined macroeconomic and news-based features yield stronger directional accuracy}
+The combined-feature setting produces the strongest numerical directional results reported in the paper. For natural gas, the combined SARIMAX model achieves DA $=0.80$, while for crude oil the combined CNN--LSTM forecast also reaches DA $=0.80$, as summarized in Table~\ref{tab:summary_best_models}. These values exceed the directional performance observed in the isolated macro-only and news-only settings for the corresponding best-performing models. However, once the exact binomial significance test is applied, those five-point holdout DAs do not reject the null of random directional guessing at the 5\% level. Accordingly, the combined feature space appears promising for directional modeling, but the evidence for statistically genuine directional skill remains limited in the fixed-holdout forecasts.
+
 \section{Discussion}\label{sec12}
 
-The experimental results reveal that predictive performance is strongly contingent on both the nature of the exogenous information incorporated and the commodity under examination --- a finding that reflects the fundamentally different price formation processes governing crude oil and natural gas markets. In the macro-only setting, performance remains uneven because broad economic indicators move more slowly than commodity prices. As a result, they are more useful for describing medium-run conditions than for explaining abrupt short-run moves. This structural mismatch between the low-frequency dynamics of macroeconomic variables and the higher-frequency movements of commodity prices helps explain why macro-only models can detect broad directional regime shifts while nonetheless failing to resolve the timing and magnitude of localized price shocks.
+The preceding results sections show a consistent pattern: model performance depends not only on the forecasting architecture, but also on how the external information is represented and combined. More broadly, predictive performance is strongly contingent on both the nature of the exogenous information incorporated and the commodity under examination --- a finding that reflects the fundamentally different price formation processes governing crude oil and natural gas markets. In the macro-only setting, performance remains uneven because broad economic indicators move more slowly than commodity prices. As a result, they are more useful for describing medium-run conditions than for explaining abrupt short-run moves. This structural mismatch between the low-frequency dynamics of macroeconomic variables and the higher-frequency movements of commodity prices helps explain why macro-only models can detect broad directional regime shifts while nonetheless failing to resolve the timing and magnitude of localized price shocks.
 
 The news-only setting highlights a different trade-off. GDELT-based features do contain relevant event information, but the aggregation process also adds noise by compressing heterogeneous news into summary variables such as event counts, tone, and conflict intensity. For that reason, news-only models can sometimes pick up broad directional changes, but they remain unstable, especially for natural gas, where large price movements are hard to infer from aggregated event signals alone.
 
@@ -1191,10 +1391,11 @@ Overall, the findings suggest that exogenous variables are most useful as comple
 
 Energy-price forecasting remains difficult because prices reflect a complicated mix of economic, geopolitical, and market-specific forces, many of which are not fully captured by the selected macroeconomic indicators and aggregated news signals. Although these inputs provide useful context, they may miss sudden shocks or localized events that drive sharp price movements. Classical time-series models are also inherently linear, while neural models, even though they are more flexible, often produce smoother outputs and may still struggle during periods of high volatility.
 
-A further limitation pertains to the representational granularity of the news data. Aggregated GDELT features are computationally convenient, but they necessarily compress event-level detail and may therefore lose some of the richer information embedded in the underlying news stream. In addition, the noise and volatility of energy-price series, especially for natural gas, can affect model stability and make generalization uneven across time periods.
+Another limitation pertains to the representational granularity of the news data. Aggregated GDELT features are computationally convenient, but they necessarily compress event-level detail and may therefore lose some of the richer information embedded in the underlying news stream. In addition, the noise and volatility of energy-price series, especially for natural gas, can affect model stability and make generalization uneven across time periods.
+
+An additional methodological limitation is that we applied walk-forward backtesting only to the LSTM and CNN--LSTM models, whereas we evaluated the classical ARIMA, SARIMA, and SARIMAX specifications on a single fixed holdout split. This creates an asymmetric comparison, because we assessed the neural models under repeated rolling-window re-estimation while we judged the classical models under a one-shot forecasting setup. We did not include the classical models in the backtesting stage primarily to keep the experimental workload tractable across the large set of model-feature combinations and because we treated them as single-shot benchmark specifications after order selection and fitting. Even so, this design choice limits strict comparability across model classes and remains a methodological constraint of the present study.
 
 Future work could address these limitations by expanding both the feature space and the modeling strategy. One natural extension is to test additional macroeconomic variables that may be only indirectly related to energy prices but still carry useful information. Future work could substantially improve the quality and specificity of news-based signals by replacing aggregated GDELT summary statistics with richer natural language representations --- such as transformer-derived sentence embeddings (e.g., BERT, FinBERT) --- applied directly to the source text of relevant news articles. It may also be useful to model the temporal persistence of events more explicitly, since the effect of a news shock is unlikely to disappear immediately. Finally, attention-based or transformer architectures may be worth exploring, although any gains would still need to be checked carefully against the size and frequency of the available data.
-
 
 \section{Conclusion}\label{sec13}
 
@@ -1202,9 +1403,13 @@ This study investigated the extent to which macroeconomic indicators sourced fro
 
 The findings also suggest that GDELT-based features and macroeconomic variables are more helpful for detecting broad market direction and turning points than for producing consistently precise point forecasts. In particular, the combined-feature SARIMAX models deliver the most reliable overall performance in this study, which suggests that the joint feature space contains explanatory relationships that are harder to recover when the inputs are separated. From an economic perspective, that result is consistent with the idea that monthly oil and gas prices continue to move with persistent macro-financial conditions, while aggregated news signals add timely information about stress and event risk. The neural models capture parts of the underlying dynamics as well, but their forecasting and backtesting behavior is less stable, especially when price changes are abrupt.
 
-Taken together, the empirical results indicate that the incorporation of heterogeneous exogenous information materially improves directional energy price modeling and reduces forecast error in well-specified linear frameworks, while simultaneously confirming that precise short-term point forecasting of volatile commodity prices remains an open and non-trivial research problem. Energy markets are shaped by rapidly changing geopolitical events, structural breaks, and nonlinear interactions that are only partly represented by aggregated macroeconomic indicators or news summaries. For that reason, the framework proposed here should be viewed as a useful step toward richer predictive modeling rather than a complete solution.
+Taken together, our empirical results indicate that incorporating heterogeneous exogenous information materially improves directional energy price modeling and reduces forecast error in well-specified linear frameworks, while simultaneously confirming that precise short-term point forecasting of volatile commodity prices remains an open and non-trivial research problem. Energy markets are shaped by rapidly changing geopolitical events, structural breaks, and nonlinear interactions that our aggregated macroeconomic indicators and news summaries represent only partly. For that reason, we view the framework proposed here as a useful step toward richer predictive modeling rather than a complete solution.
 
 This study contributes a structured comparative framework for assessing univariate and multivariate forecasting models under a common validation design, while demonstrating the analytical value of integrating structured macroeconomic indicators with event-driven news features. Within this framework, RMSE serves as an indicator of how closely a model reproduces realized price levels, whereas directional accuracy (DA) reflects how reliably the model captures the sign of period-to-period price changes. Taken together, these evaluation perspectives suggest that external information can strengthen both point-forecast performance and directional inference. At the same time, the results reaffirm that precise forecasting of highly volatile commodity prices remains inherently challenging and continues to warrant further methodological development.
+
+\section*{Data Availability and Code Availability}
+
+The raw price and macroeconomic series used in this study come from publicly accessible sources, including FRED and GDELT. The codebase and the processed data used for this manuscript is publicly available through the project GitHub repository: \url{https://github.com/AswinBalajiTR/spring-2026-group6}.
 
 %%===========================================================================================%%
 %% References included directly in the manuscript file                                      %%
@@ -1243,7 +1448,7 @@ Diebold, F.X., Mariano, R.S.: Comparing predictive accuracy. Journal of Business
 Durbin, J., Koopman, S.J.: \textit{Time Series Analysis by State Space Methods}, 2nd edn. Oxford University Press, Oxford (2012).
 
 \bibitem{fred2025}
-Federal Reserve Bank of St. Louis: Federal Reserve Economic Data (FRED). \url{https://fred.stlouisfed.org/} (accessed 2025).
+Federal Reserve Bank of St. Louis: Federal Reserve Economic Data (FRED). Available at: \url{https://fred.stlouisfed.org/} (accessed January 2025).
 
 \bibitem{gers2000}
 Gers, F.A., Schmidhuber, J., Cummins, F.: Learning to forget: continual prediction with LSTM. Neural Computation \textbf{12}(10), 2451--2471 (2000).
@@ -1273,7 +1478,7 @@ Kilian, L.: Not all oil price shocks are alike: disentangling demand and supply 
 Kim, H.Y., Won, C.H.: Forecasting the volatility of stock price index: a hybrid model integrating LSTM with multiple GARCH-type models. Expert Systems with Applications \textbf{103}, 25--37 (2018).
 
 \bibitem{kingma2015}
-Kingma, D.P., Ba, J.: Adam: a method for stochastic optimization. In: International Conference on Learning Representations (2015).
+Kingma, D.P., Ba, J.: Adam: a method for stochastic optimization. In: Proceedings of the International Conference on Learning Representations (2015).
 
 \bibitem{kwiatkowski1992}
 Kwiatkowski, D., Phillips, P.C.B., Schmidt, P., Shin, Y.: Testing the null hypothesis of stationarity against the alternative of a unit root. Journal of Econometrics \textbf{54}(1--3), 159--178 (1992).
@@ -1282,7 +1487,7 @@ Kwiatkowski, D., Phillips, P.C.B., Schmidt, P., Shin, Y.: Testing the null hypot
 LeCun, Y., Bottou, L., Bengio, Y., Haffner, P.: Gradient-based learning applied to document recognition. Proceedings of the IEEE \textbf{86}(11), 2278--2324 (1998).
 
 \bibitem{leetaru2013}
-Leetaru, K., Schrodt, P.A.: GDELT: Global Data on Events, Location, and Tone, 1979--2012. In: ISA Annual Convention (2013).
+Leetaru, K., Schrodt, P.A.: GDELT: Global Data on Events, Location, and Tone, 1979--2012. In: Proceedings of the ISA Annual Convention (2013).
 
 \bibitem{li2014}
 Li, X., Xie, H., Chen, L., Wang, J., Deng, X.: News impact on stock price return via sentiment analysis. Knowledge-Based Systems \textbf{69}, 14--23 (2014).
